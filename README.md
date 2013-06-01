@@ -1,6 +1,6 @@
 # enstrophy #
 
-Implementaion of sort, search and graph algorithms described in
+Implementation of sort, search and graph algorithms described in
 "Algorithms" by Sedgewick and Wayne.
 
 ## Contact ##
