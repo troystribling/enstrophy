@@ -11,6 +11,7 @@ class SortTest extends FunSpec with ShouldMatchers {
       it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values") {
         val intArray = Array(7,99,1,8,10,3)
         val result = ExchangeSortFunctional.sort(intArray)
+        println(result.mkString("\n")+"\n")
       }
     }
   }
@@ -21,6 +22,7 @@ class SortTest extends FunSpec with ShouldMatchers {
       it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values") {
         var intArray = Array(7,99,1,8,10,3)
         val result = ExchangeSortFunctional.sort(intArray)
+        println(result.mkString("\n")+"\n")
       }
     }
   }

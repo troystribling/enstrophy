@@ -3,22 +3,16 @@ package us.gnos.enstrophy.sort
 import scala.reflect.ClassTag
 
 object SortUtils {
-  def minIndex[T](array:Array[T], ordering:Ordering[T]) = {
+  def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
     var minIdx = 0
-    for (idx <- 0 until array.length) {
-      if (ordering.gt(array(minIdx), array(idx)))
-        minIdx = idx
-    }
+    array.indices.toArray.foreach((i) =>
+      if (ordering.gt(array(minIdx), array(i)))
+        minIdx = i
+    )
     minIdx
   }
   def isOrdered[T](array:Array[T], ordering:Ordering[T]) = {
-    var status = true
-    for (i <- 1 until array.length) {
-      if (ordering.gt(array(i-1),array(i))) {
-        status = false
-      }
-    }
-    status
+    (1 until array.length).toArray.forall((i) => ordering.gt(array(i-1),array(i)))
   }
 }
 
@@ -41,10 +35,9 @@ object ExchangeSort {
     def exch(i:Int, j:Int) = {
       val tmp = input(i); input(i) = input(j); input(j) = tmp
     }
-    for (idx <- 0 until input.length) {
-      val minIndex = SortUtils.minIndex(input.drop(idx), ordering)
-      exch(idx, minIndex)
-    }
+    input.indices.toArray.foreach((i) =>
+      exch(i, SortUtils.minIndex(input.drop(i), ordering))
+    )
   }
 }
 
