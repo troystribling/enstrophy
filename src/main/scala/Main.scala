@@ -13,22 +13,36 @@ object Main {
     f
     System.currentTimeMillis - start
   }
-  def randomVector(n:Int) = {
-    Array.fill(n)(Random.nextInt(100))
+  def randomArray(n:Int) = {
+    Array.fill(n)(Random.nextInt(n))
   }
   def runSorts() {
-    val elements = 2000
+    val elements = 10
     printf("RUNNING SORTS\n")
-    (1 to 5).foreach((i:Int) => {
-      println("NUMBER OF ELEMENTS: %d".format(i*elements))
-      var exeTime = timeExecution({
-        val sort = ExchangeSortFunctional.sort(randomVector(i*elements))
-      })
-      println("ExchangeSortFunctional: %dms".format(exeTime))
-      exeTime = timeExecution({
-        val sort = ExchangeSort.sort(randomVector(i*elements))
+    (1 to 1).foreach((i:Int) => {
+
+      //println("NUMBER OF ELEMENTS: %d".format(i*elements))
+      //val valArray = randomArray(i*elements)
+      //var exeTime = timeExecution({
+        //checkSort(valArray)
+        //val sort = ExchangeSortFunctional.sort(valArray)
+        //checkSort(sort)
+      //})
+      //println("ExchangeSortFunctional: %dms".format(exeTime))
+
+      var varArray = randomArray(i*elements)
+      println(varArray.mkString("\n"))
+      val exeTime = timeExecution({
+        checkSort(varArray)
+        val sort = ExchangeSort.sort(varArray)
+        println("DONE")
+        println(sort.mkString("\n"))
+        checkSort(sort)
       })
       println("ExchangeSort: %dms".format(exeTime))}
     )
+  }
+  def checkSort[T](array:Array[T])(implicit ordering:Ordering[T]) {
+    if (SortUtils.isOrdered(array)(ordering)) println("SORTED") else println("NOT SORTED")
   }
 }

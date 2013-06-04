@@ -12,7 +12,9 @@ object SortUtils {
     minIdx
   }
   def isOrdered[T](array:Array[T])(implicit ordering:Ordering[T]) = {
-    (1 until array.length).forall((i) => ordering.gt(array(i-1),array(i)))
+    (1 until array.length).forall((i) => ordering.lteq(array(i-1),array(i)))
+  }
+  def printArray[T](array:Array[T]) {
   }
 }
 
@@ -31,13 +33,15 @@ object ExchangeSortFunctional {
 }
 
 object ExchangeSort {
-  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) {
+  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     def exch(i:Int, j:Int) = {
+      println("%d, %d".format(i,j))
       val tmp = input(i); input(i) = input(j); input(j) = tmp
     }
     input.indices.foreach((i) =>
       exch(i, SortUtils.minIndex(input.drop(i), ordering))
     )
+    input
   }
 }
 
