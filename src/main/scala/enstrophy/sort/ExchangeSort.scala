@@ -5,14 +5,14 @@ import scala.reflect.ClassTag
 object SortUtils {
   def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
     var minIdx = 0
-    array.indices.toArray.foreach((i) =>
+    array.indices.foreach((i) =>
       if (ordering.gt(array(minIdx), array(i)))
         minIdx = i
     )
     minIdx
   }
-  def isOrdered[T](array:Array[T], ordering:Ordering[T]) = {
-    (1 until array.length).toArray.forall((i) => ordering.gt(array(i-1),array(i)))
+  def isOrdered[T](array:Array[T])(implicit ordering:Ordering[T]) = {
+    (1 until array.length).forall((i) => ordering.gt(array(i-1),array(i)))
   }
 }
 
@@ -35,7 +35,7 @@ object ExchangeSort {
     def exch(i:Int, j:Int) = {
       val tmp = input(i); input(i) = input(j); input(j) = tmp
     }
-    input.indices.toArray.foreach((i) =>
+    input.indices.foreach((i) =>
       exch(i, SortUtils.minIndex(input.drop(i), ordering))
     )
   }
