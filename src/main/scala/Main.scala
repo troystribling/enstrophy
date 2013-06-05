@@ -1,6 +1,7 @@
 package gnos.us.enstrophy
 
 import scala.util.Random
+import scala.reflect.ClassTag
 
 import us.gnos.enstrophy.sort._
 
@@ -8,37 +9,32 @@ object Main {
   def main(args: Array[String]) {
     runSorts()
   }
-  def timeExecution(f: => Unit) = {
+  def timeExecution[T:ClassTag](f: => Array[T]) = {
     val start = System.currentTimeMillis
-    f
-    System.currentTimeMillis - start
+    val sort = f
+    (System.currentTimeMillis - start, f)
   }
   def randomArray(n:Int) = {
     Array.fill(n)(Random.nextInt(n))
   }
   def runSorts() {
-    val elements = 10
+    val elements = 2000
     printf("RUNNING SORTS\n")
-    (1 to 1).foreach((i:Int) => {
+    (1 to 5).foreach((i:Int) => {
 
-      //println("NUMBER OF ELEMENTS: %d".format(i*elements))
-      //val valArray = randomArray(i*elements)
-      //var exeTime = timeExecution({
-        //checkSort(valArray)
-        //val sort = ExchangeSortFunctional.sort(valArray)
-        //checkSort(sort)
-      //})
-      //println("ExchangeSortFunctional: %dms".format(exeTime))
+      println("NUMBER OF ELEMENTS: %d".format(i*elements))
+      val valArray = randomArray(i*elements)
+      val (exeFunTime, exeFunSort) = timeExecution({
+          ExchangeSortFunctional.sort(valArray)
+      })
+      checkSort(exeFunSort)
+      println("ExchangeSortFunctional: %dms".format(exeFunTime))
 
       var varArray = randomArray(i*elements)
-      println(varArray.mkString("\n"))
-      val exeTime = timeExecution({
-        checkSort(varArray)
-        val sort = ExchangeSort.sort(varArray)
-        println("DONE")
-        println(sort.mkString("\n"))
-        checkSort(sort)
+      val (exeTime, exeSort) = timeExecution({
+        ExchangeSort.sort(varArray)
       })
+      checkSort(exeSort)
       println("ExchangeSort: %dms".format(exeTime))}
     )
   }

@@ -35,12 +35,11 @@ object ExchangeSortFunctional {
 object ExchangeSort {
   def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     def exch(i:Int, j:Int) = {
-      println("%d, %d".format(i,j))
       val tmp = input(i); input(i) = input(j); input(j) = tmp
     }
-    input.indices.foreach((i) =>
-      exch(i, SortUtils.minIndex(input.drop(i), ordering))
-    )
+    input.indices.foreach({(i) =>
+      exch(i, i + SortUtils.minIndex(input.drop(i), ordering))
+    })
     input
   }
 }
