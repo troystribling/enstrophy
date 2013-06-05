@@ -9,10 +9,11 @@ object Main {
   def main(args: Array[String]) {
     runSorts()
   }
-  def timeExecution[T:ClassTag](f: => Array[T]) = {
+  def timeSortExecution[T:ClassTag](f: => Array[T])(implicit ordering:Ordering[T]) {
     val start = System.currentTimeMillis
     val sort = f
-    (System.currentTimeMillis - start, f)
+    println("Execution Time: %dms".format(System.currentTimeMillis - start))
+    checkSort(sort)(ordering)
   }
   def randomArray(n:Int) = {
     Array.fill(n)(Random.nextInt(n))
@@ -24,19 +25,13 @@ object Main {
 
       println("NUMBER OF ELEMENTS: %d".format(i*elements))
       val valArray = randomArray(i*elements)
-      val (exeFunTime, exeFunSort) = timeExecution({
-          ExchangeSortFunctional.sort(valArray)
-      })
-      checkSort(exeFunSort)
-      println("ExchangeSortFunctional: %dms".format(exeFunTime))
+      println("ExchangeSortFunctional")
+      timeSortExecution(ExchangeSortFunctional.sort(valArray))
 
       var varArray = randomArray(i*elements)
-      val (exeTime, exeSort) = timeExecution({
-        ExchangeSort.sort(varArray)
-      })
-      checkSort(exeSort)
-      println("ExchangeSort: %dms".format(exeTime))}
-    )
+      println("ExchangeSort")
+      timeSortExecution(ExchangeSort.sort(varArray))
+    })
   }
   def checkSort[T](array:Array[T])(implicit ordering:Ordering[T]) {
     if (SortUtils.isOrdered(array)(ordering)) println("SORTED") else println("NOT SORTED")
