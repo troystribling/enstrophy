@@ -1,4 +1,4 @@
-package us.gnos.enstrophy.sort
+package us.gnos.enstrophy
 
 import scala.reflect.ClassTag
 
@@ -14,7 +14,8 @@ object SortUtils {
   def isOrdered[T](array:Array[T])(implicit ordering:Ordering[T]) = {
     (1 until array.length).forall((i) => ordering.lteq(array(i-1),array(i)))
   }
-  def printArray[T](array:Array[T]) {
+  def exch[T](array:Array[T], i:Int, j:Int) = {
+    val tmp = array(i); array(i) = array(j); array(j) = tmp
   }
 }
 
@@ -33,13 +34,22 @@ object ExchangeSortFunctional {
 }
 
 object ExchangeSort {
-  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    def exch(i:Int, j:Int) = {
-      val tmp = input(i); input(i) = input(j); input(j) = tmp
-    }
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     input.indices.foreach({(i) =>
-      exch(i, i + SortUtils.minIndex(input.drop(i), ordering))
+      SortUtils.exch(input, i, i + SortUtils.minIndex(input.drop(i), ordering))
     })
+    input
+  }
+}
+
+object InsertionSortFunctional {
+  def sort[T](input:Array[T])(ordering:Ordering[T]) : Array[T] = {
+    input
+  }
+}
+
+object InsertionSort {
+  def sort[T](input:Array[T])(ordering:Ordering[T]) : Array[T] = {
     input
   }
 }

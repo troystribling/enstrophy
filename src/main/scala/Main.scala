@@ -1,9 +1,9 @@
-package gnos.us.enstrophy
+package us.gnos.enstrophy
 
 import scala.util.Random
 import scala.reflect.ClassTag
 
-import us.gnos.enstrophy.sort._
+import us.gnos.enstrophy._
 
 object Main {
   def main(args: Array[String]) {
@@ -17,6 +17,9 @@ object Main {
   }
   def randomArray(n:Int) = {
     Array.fill(n)(Random.nextInt(n))
+  }
+  def checkSort[T](array:Array[T])(implicit ordering:Ordering[T]) {
+    if (SortUtils.isOrdered(array)(ordering)) println("SORTED") else println("NOT SORTED")
   }
   def runSorts() {
     val elements = 2000
@@ -32,8 +35,5 @@ object Main {
       println("ExchangeSort")
       timeSortExecution(ExchangeSort.sort(varArray))
     })
-  }
-  def checkSort[T](array:Array[T])(implicit ordering:Ordering[T]) {
-    if (SortUtils.isOrdered(array)(ordering)) println("SORTED") else println("NOT SORTED")
   }
 }

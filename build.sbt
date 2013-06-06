@@ -62,7 +62,7 @@ javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation")
 /* entry point */
 mainClass in (Compile, packageBin) := Some("gnos.us.enstrophy.Main")
 
-mainClass in (Compile, run) := Some("gnos.us.enstrophy.Main")
+mainClass in (Compile, run) := Some("us.gnos.enstrophy.Main")
 
 // CONTINUATIONS
 autoCompilerPlugins := true
