@@ -27,5 +27,21 @@ class SortTest extends FunSpec with ShouldMatchers {
     }
   }
 
+  describe("InsertionSortFunctional") {
+    describe("sort") {
+      it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values") {
+      }
+    }
+  }
+
+  describe("InsertionSort") {
+    describe("sort") {
+      it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values") {
+        var intArray = Array(7,99,1,8,10,3)
+        val result = InsertionSort.sort(intArray)
+        result should equal (Array(1,3,7,8,10,99))
+      }
+    }
+  }
 }
 

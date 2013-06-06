@@ -43,13 +43,18 @@ object ExchangeSort {
 }
 
 object InsertionSortFunctional {
-  def sort[T](input:Array[T])(ordering:Ordering[T]) : Array[T] = {
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     input
   }
 }
 
 object InsertionSort {
-  def sort[T](input:Array[T])(ordering:Ordering[T]) : Array[T] = {
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    (1 until input.length).foreach({(i) =>
+      (i until 0 by -1).foreach({(j) =>
+        if (ordering.lt(input(j), input(j-1))) SortUtils.exch(input, j, j-1)
+      })
+    })
     input
   }
 }
