@@ -22,7 +22,7 @@ scmInfo := Some(
   )
 )
 
-organizationName := "gnos.us"
+organizationName := "us.gnos"
 
 /* scala versions and options */
 scalaVersion := "2.10.1"
@@ -152,6 +152,9 @@ mappings in (Compile, packageBin) ~= { (ms: Seq[(File, String)]) =>
       toPath != "application.conf"
   }
 }
+
+initialCommands  in console := "import us.gnos.enstrophy.sort._;import us.gnos.enstrophy._"
+
 
 publishArtifact in Test := false
 

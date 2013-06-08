@@ -3,7 +3,7 @@ package us.gnos.enstrophy
 import scala.util.Random
 import scala.reflect.ClassTag
 
-import us.gnos.enstrophy._
+import us.gnos.enstrophy.sort._
 
 object Main {
   def main(args: Array[String]) {

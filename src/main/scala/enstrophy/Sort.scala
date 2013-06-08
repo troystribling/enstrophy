@@ -1,4 +1,4 @@
-package us.gnos.enstrophy
+package us.gnos.enstrophy.sort
 
 import scala.reflect.ClassTag
 
@@ -27,7 +27,7 @@ object ExchangeSortFunctional {
     case false =>
       val minIndex = SortUtils.minIndex(input, ordering)
       val nextInput = input.splitAt(minIndex)
-      this.sort((nextInput._1 ++ nextInput._2.tail).toArray, output :+ input(minIndex), ordering)
+      this.sort(nextInput._1 ++ nextInput._2.tail, output :+ input(minIndex), ordering)
   }
 }
 
@@ -61,12 +61,37 @@ object InsertionSortFunctional {
 }
 
 object InsertionSort {
-  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    (1 until input.length).foreach({(i) =>
-      for (j <- (i until 0 by -1).toList if ordering.lt(input(j), input(j-1)))
-        SortUtils.exch(input, j, j-1)
+  def hsort[T](input:Array[T], h:Int)(implicit ordering:Ordering[T]) : Array[T] = {
+    (h until input.length).foreach({(i) =>
+      for (j <- (i until h-1 by -h) if ordering.lt(input(j), input(j-h))) {
+        SortUtils.exch(input, j, j-h)
+      }
     })
     input
   }
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    this.hsort(input, 1)(ordering)
+  }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// InsertionSortWithoutExchanges Problem 2.1.25
+object InsertionSortWithoutExchangesFunctional {
+
+}
+
+object InsertionSortWithoutExchages {
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ShellSort
+object ShellSortFunctional {
+
+}
+
+object ShellSort {
+
+}
+
 
