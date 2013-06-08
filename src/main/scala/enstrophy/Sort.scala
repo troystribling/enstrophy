@@ -2,14 +2,11 @@ package us.gnos.enstrophy
 
 import scala.reflect.ClassTag
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SortUtils
 object SortUtils {
   def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
-    var minIdx = 0
-    array.indices.foreach((i) =>
-      if (ordering.gt(array(minIdx), array(i)))
-        minIdx = i
-    )
-    minIdx
+    (array.indices :\ 0) ((idx, minIdx) => if (ordering.gt(array(minIdx), array(idx))) idx else minIdx)
   }
   def isOrdered[T](array:Array[T])(implicit ordering:Ordering[T]) = {
     (1 until array.length).forall((i) => ordering.lteq(array(i-1),array(i)))
@@ -19,11 +16,12 @@ object SortUtils {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ExchangeSort
 object ExchangeSortFunctional {
   def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     this.sort(input, Array[T](), ordering)
   }
-
   private def sort[T:ClassTag](input:Array[T], output:Array[T], ordering:Ordering[T]) : Array[T]  = input.isEmpty match {
     case true  => output
     case false =>
@@ -42,20 +40,22 @@ object ExchangeSort {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// InsertionSort
 object InsertionSortFunctional {
   def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     this.sort(input, Array[T](), ordering)
   }
-
-  private def sort[T](input:Array[T], output:Array[T], ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
+  private def sort[T:ClassTag](input:Array[T], output:Array[T], ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
     case true => output
     case false =>
       val nextVal = input.head
-      output.indices.find(output(_) <= nextVal) match {
-        case Some(_) =>
-          self.sort(input.tail, output, ordering)
+      output.indices.find((i) => ordering.lt(nextVal, output(i))) match {
+        case Some(minIdx) =>
+          val nextOutput = output.splitAt(minIdx)
+          this.sort(input.tail, (nextOutput._1 :+ nextVal) ++ nextOutput._2, ordering)
         case None =>
-          self.sort(input.tail, output :+ nextVal, ordering)
+          this.sort(input.tail, output :+ nextVal, ordering)
       }
   }
 }
