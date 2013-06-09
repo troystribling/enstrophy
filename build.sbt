@@ -153,9 +153,6 @@ mappings in (Compile, packageBin) ~= { (ms: Seq[(File, String)]) =>
   }
 }
 
-initialCommands  in console := "import us.gnos.enstrophy.sort._;import us.gnos.enstrophy._"
-
-
 publishArtifact in Test := false
 
 // publishArtifact in (Compile, packageDoc) := false
@@ -184,4 +181,6 @@ mainClass in AssemblyKeys.assembly := Some("gnos.us.enstrophy.Main")
 assemblySettings
 
 test in AssemblyKeys.assembly := {}
+
+initialCommands  in console := "import us.gnos.enstrophy.sort._"
 

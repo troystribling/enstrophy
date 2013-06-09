@@ -14,7 +14,7 @@ object SortUtils {
   def exch[T](array:Array[T], i:Int, j:Int) = {
     val tmp = array(i); array(i) = array(j); array(j) = tmp
   }
-  def hmax(n:Int, h:Int = 1) : Int = n/3 < h match {
+  def hmax(n:Int, h:Int = 1) : Int = n/3 > h match {
     case true => this.hmax(n, 3*h+1)
     case false => h
   }
