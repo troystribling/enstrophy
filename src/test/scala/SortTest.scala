@@ -95,5 +95,18 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     }
   }
 
+  describe("SortUtils") {
+
+    object SortUtilsTest extends Tag("us.gnos.enstropy.SortTest.SortUtils")
+
+    describe("hmax") {
+      it ("returns the maximum h value used by shell sort when given an array size") {
+        SortUtils.hmax(1) should equal (1)
+        SortUtils.hmax(10) should equal (4)
+        SortUtils.hmax(100) should equal (40)
+        SortUtils.hmax(1000) should equal (364)
+      }
+    }
+  }
 }
 
