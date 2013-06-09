@@ -17,14 +17,14 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     object ExchangeSortTest extends Tag("us.gnos.estrophy.SortTest.ExchangeSortTest")
 
     describe("sort") {
-      it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", ExchangeSortTest) {
+      it ("returns a sorted Array[Int] when given an Array[Int] with random values", ExchangeSortTest) {
         ExchangeSortFunctional.sort(intArray) should equal (sortedIntArray)
       }
     }
 
     describe("Functional implimentation") {
       describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", ExchangeSortTest) {
+        it ("returns a sorted Array[Int] when given an Array[Int] with random values", ExchangeSortTest) {
           ExchangeSortFunctional.sort(intArray) should equal (sortedIntArray)
         }
       }
@@ -36,24 +36,24 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     object InsertionSortTest extends Tag("us.gnos.estrophy.SortTest.InsertionSortTest")
 
     describe("sort") {
-      it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", InsertionSortTest) {
+      it ("returns a sorted Array[Int] when given an Array[Int] with random values", InsertionSortTest) {
         InsertionSort.sort(intArray) should equal (sortedIntArray)
       }
     }
     describe("hsort") {
-      it("returns an h sorted Array[Int] when given an Array[Int] with ramdom values and an h value", InsertionSortTest) {
+      it("returns an h sorted Array[Int] when given an Array[Int] with random values and an h value", InsertionSortTest) {
         InsertionSort.hsort(hintArray, 3) should equal (h3sortedIntArray)
       }
     }
 
     describe("Functional implimentation") {
       describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", InsertionSortTest) {
+        it ("returns a sorted Array[Int] when given an Array[Int] with random values", InsertionSortTest) {
           InsertionSortFunctional.sort(intArray) should equal (sortedIntArray)
         }
       }
       describe("hsort") {
-        it("returns an h sorted Array[Int] when given an Array[Int] with ramdom values and an h value", InsertionSortTest) {
+        it("returns an h sorted Array[Int] when given an Array[Int] with random values and an h value", InsertionSortTest) {
           InsertionSortFunctional.hsort(hintArray, 3) should equal (h3sortedIntArray)
         }
       }
@@ -65,12 +65,12 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     object InsertionSortWithoutExchagesTest extends Tag("us.gnos.estrophy.SortTest.InsertionSortWithoutExchagesTests")
 
     describe("sort") {
-      it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", InsertionSortWithoutExchagesTest) (pending)
+      it ("returns a sorted Array[Int] when given an Array[Int] with random values", InsertionSortWithoutExchagesTest) (pending)
     }
 
     describe("Functional implimentation") {
       describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", InsertionSortWithoutExchagesTest) (pending)
+        it ("returns a sorted Array[Int] when given an Array[Int] with random values", InsertionSortWithoutExchagesTest) (pending)
       }
     }
 
@@ -81,14 +81,14 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     object ShellSortTest extends Tag("us.gnos.estrophy.SortTest.ShellSortTest")
 
     describe("sort") {
-      it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", ShellSortTest) {
+      it ("returns a sorted Array[Int] when given an Array[Int] with random values", ShellSortTest) {
         ShellSort.sort(hintArray) should equal (hsortedIntArray)
       }
     }
 
     describe("Functional implimentation") {
       describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", ShellSortTest) {
+        it ("returns a sorted Array[Int] when given an Array[Int] with random values", ShellSortTest) {
           ShellSortFunctional.sort(hintArray) should equal (hsortedIntArray)
         }
       }
@@ -106,6 +106,19 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
         SortUtils.hmax(100) should equal (40)
         SortUtils.hmax(1000) should equal (364)
       }
+    }
+  }
+
+  describe("MergeSort") {
+
+    object MergeSort extends Tag("us.gnos.enstrophy.SortTest.MergeSort")
+
+    describe("sort") {
+      it("returns a sorted Array[Int] when given an Array[Int] with random values") (pending)
+    }
+
+    describe("merge") {
+      it("returns a single sorted Array[Int] when given two serted Array[Int]s") (pending)
     }
   }
 }
