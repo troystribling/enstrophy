@@ -43,20 +43,32 @@ object ExchangeSort {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // InsertionSort
 object InsertionSortFunctional {
-  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    this.sort(input, Array[T](), ordering)
+  def hsort[T:ClassTag](input:Array[T], h:Int)(implicit ordering:Ordering[T]) : Array[T] = {
+    this.hsort(input, Array[T](), h, 1, ordering)
   }
-  private def sort[T:ClassTag](input:Array[T], output:Array[T], ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
+  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    this.hsort(input, Array[T](), 1, 1, ordering)
+  }
+  private def hsort[T:ClassTag](input:Array[T], output:Array[T], hin:Int, hout:Int, ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
     case true => output
     case false =>
+      val happly = if (hout > hin) 1 else hout
       val nextVal = input.head
-      output.indices.find((i) => ordering.lt(nextVal, output(i))) match {
+      (happly-1 until output.length by hin).find((i) => ordering.lt(nextVal, output(i))) match {
         case Some(minIdx) =>
           val nextOutput = output.splitAt(minIdx)
-          this.sort(input.tail, (nextOutput._1 :+ nextVal) ++ nextOutput._2, ordering)
+          val shiftedOutput = this.shiftRight(nextOutput._2, Array[T](), hin)
+          this.hsort(input.tail, (nextOutput._1 :+ nextVal) ++ shiftedOutput, hin, happly+1, ordering)
         case None =>
-          this.sort(input.tail, output :+ nextVal, ordering)
+          this.hsort(input.tail, output :+ nextVal, hin, happly+1, ordering)
       }
+  }
+  private def shiftRight[T:ClassTag](input:Array[T], output:Array[T], h:Int) : Array[T]  = input.length < h match {
+    case true =>
+      output ++ input
+    case false =>
+      val slice = input.take(h)
+      this.shiftRight(input.drop(h), (output++slice.tail) :+ slice.head, h)
   }
 }
 

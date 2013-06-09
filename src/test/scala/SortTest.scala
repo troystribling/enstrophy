@@ -39,7 +39,6 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
         InsertionSort.sort(intArray) should equal (sortedIntArray)
       }
     }
-
     describe("hsort") {
       it("returns an h sorted Array[Int] when given an Array[Int] with ramdom values and an h value", InsertionSortTest) {
         InsertionSort.hsort(hintArray, 3) should equal (h3sortedIntArray)
@@ -50,6 +49,11 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
       describe("sort") {
         it ("returns a sorted Array[Int] when given an Array[Int] with ramdom values", InsertionSortTest) {
           InsertionSortFunctional.sort(intArray) should equal (sortedIntArray)
+        }
+      }
+      describe("hsort") {
+        it("returns an h sorted Array[Int] when given an Array[Int] with ramdom values and an h value", InsertionSortTest) {
+          InsertionSortFunctional.hsort(hintArray, 3) should equal (h3sortedIntArray)
         }
       }
     }
