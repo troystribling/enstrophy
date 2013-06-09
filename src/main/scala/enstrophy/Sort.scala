@@ -14,6 +14,10 @@ object SortUtils {
   def exch[T](array:Array[T], i:Int, j:Int) = {
     val tmp = array(i); array(i) = array(j); array(j) = tmp
   }
+  def hmax(n:Int, h:Int = 1) : Int = n/3 < h match {
+    case true => this.hmax(n, 3*h+1)
+    case false => h
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,11 +103,24 @@ object InsertionSortWithoutExchages {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ShellSort
 object ShellSortFunctional {
-
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    this.sort(input, SortUtils.hmax(input.length), ordering)
+  }
+  private def sort[T](input:Array[T], h:Int, ordering:Ordering[T]) : Array[T] = h < 1 match {
+    case true => input
+    case false => this.sort(InsertionSort.hsort(input, h)(ordering), h/3, ordering)
+  }
 }
 
 object ShellSort {
-
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    var h = SortUtils.hmax(input.length)
+    while(h >= 1) {
+      InsertionSort.hsort(input, h)(ordering)
+      h = h/3
+    }
+    input
+  }
 }
 
 
