@@ -127,7 +127,7 @@ object ShellSort {
 // MergeSort
 // arrays can be different sizes but are assumed adjacent first spans lo->mid, second mid+1->h
 object MergeSort {
-  def merge[T](input:Array[T], tmp:Array[T], lo:Int, mid:Int, hi:Int)(implicit ordering:Ordering[T]) {
+  def merge[T](input:Array[T], tmp:Array[T], lo:Int, mid:Int, hi:Int)(implicit ordering:Ordering[T]) = {
     var i = lo; var j = mid+1
     (lo to hi).foreach((k) => tmp(k) = input(k))
     (lo to hi).foreach((k) => {
@@ -145,6 +145,19 @@ object MergeSort {
         input(k) = tmp(i); i += 1
       }
     })
+    input
+  }
+  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    this.sort(input, new Array[T](input.length), 0, input.length-1, ordering)
+  }
+
+  private def sort[T](input:Array[T], tmp:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = hi <= lo match  {
+    case true => input
+    case false =>
+      val mid = lo + (hi - lo)/2
+      this.sort(input, tmp, lo, mid, ordering)
+      this.sort(input, tmp, mid+1, hi, ordering)
+      this.merge(input, tmp, lo, mid, hi)(ordering)
   }
 }
 

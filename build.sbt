@@ -127,7 +127,7 @@ resolvers ++= Seq(
 /* testing */
 parallelExecution in Test := false
 
-testOptions in Test += Tests.Argument("-oDF")
+testOptions in Test += Tests.Argument("-oDS")
 
 /* sbt behavior */
 logLevel in compile := Level.Warn

@@ -6,11 +6,25 @@ import us.gnos.enstrophy.sort._
 
 class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
-  val intArray = Array(7,99,1,8,10,3)
-  val sortedIntArray = Array(1,3,7,8,10,99)
-  val hintArray = Array(8,99,1,7,10,89,20,777,21,55,32,3)
-  val h3sortedIntArray = Array(7,10,1,8,32,3,20,99,21,55,777,89)
-  val hsortedIntArray = Array(1,3,7,8,10,20,21,32,55,89,99,777)
+  var intArray : Array[Int] = _
+  var sortedIntArray = Array(1,3,7,8,10,99)
+
+  var hintArray : Array[Int] = _
+  var h3sortedIntArray = Array(7,10,1,8,32,3,20,99,21,55,777,89)
+
+  var shellIntArray : Array[Int] = _
+  var shellSortedIntArray = Array(1,3,7,8,10,20,21,32,55,89,99,777)
+
+  var mergeIntArray : Array[Int] = _
+  var mergedIntArray = Array(6,5,2,3,5,6,7,7,9,10,1,4,7)
+  var mergeSortedIntArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
+
+  before {
+    intArray = Array(7,99,1,8,10,3)
+    hintArray = Array(8,99,1,7,10,89,20,777,21,55,32,3)
+    shellIntArray = Array(8,99,1,7,10,89,20,777,21,55,32,3)
+    mergeIntArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
+  }
 
   describe("ExchangeSort") {
 
@@ -82,14 +96,14 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
     describe("sort") {
       it ("returns a sorted Array[Int] when given an Array[Int] with random values", ShellSortTest) {
-        ShellSort.sort(hintArray) should equal (hsortedIntArray)
+        ShellSort.sort(intArray) should equal (sortedIntArray)
       }
     }
 
     describe("Functional implimentation") {
       describe("sort") {
         it ("returns a sorted Array[Int] when given an Array[Int] with random values", ShellSortTest) {
-          ShellSortFunctional.sort(hintArray) should equal (hsortedIntArray)
+          ShellSortFunctional.sort(intArray) should equal (sortedIntArray)
         }
       }
     }
@@ -111,14 +125,20 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
   describe("MergeSort") {
 
-    object MergeSort extends Tag("us.gnos.enstrophy.SortTest.MergeSort")
+    object MergeSortTest extends Tag("us.gnos.enstrophy.SortTest.MergeSort")
 
     describe("sort") {
-      it("returns a sorted Array[Int] when given an Array[Int] with random values") (pending)
+      it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest) {
+        MergeSort.sort(mergeIntArray) should equal(mergeSortedIntArray)
+      }
     }
 
     describe("merge") {
-      it("returns a single sorted Array[Int] when given two serted Array[Int]s") (pending)
+      it("returns a single sorted Array[Int] when given two serted Array[Int]s", MergeSortTest) {
+        MergeSort.merge(input = mergeIntArray,
+                        tmp = new Array[Int](mergeIntArray.length),
+                        lo = 2, mid = 5, hi = 9) should equal(mergedIntArray)
+      }
     }
   }
 }
