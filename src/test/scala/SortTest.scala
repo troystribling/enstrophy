@@ -114,32 +114,39 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     object SortUtilsTest extends Tag("us.gnos.enstropy.SortTest.SortUtils")
 
     describe("hmax") {
-      it ("returns the maximum h value used by shell sort when given an array size") {
+      it ("returns the maximum h value used by shell sort when given an array size", SortUtilsTest) {
         SortUtils.hmax(1) should equal (1)
         SortUtils.hmax(10) should equal (4)
         SortUtils.hmax(100) should equal (40)
         SortUtils.hmax(1000) should equal (364)
       }
     }
+
+    describe("merge") {
+      it("returns a single sorted Array[Int] when given two serted Array[Int]s", SortUtilsTest) {
+        SortUtils.merge(input = mergeIntArray,
+                        tmp = new Array[Int](mergeIntArray.length),
+                        lo = 2, mid = 5, hi = 9) should equal(mergedIntArray)
+      }
+    }
+
   }
 
   describe("MergeSort") {
 
     object MergeSortTest extends Tag("us.gnos.enstrophy.SortTest.MergeSort")
 
-    describe("sort") {
+    describe("topDownSort") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest) {
-        MergeSort.sort(mergeIntArray) should equal(mergeSortedIntArray)
+        MergeSort.topDownSort(mergeIntArray) should equal(mergeSortedIntArray)
       }
     }
 
-    describe("merge") {
-      it("returns a single sorted Array[Int] when given two serted Array[Int]s", MergeSortTest) {
-        MergeSort.merge(input = mergeIntArray,
-                        tmp = new Array[Int](mergeIntArray.length),
-                        lo = 2, mid = 5, hi = 9) should equal(mergedIntArray)
+    describe("bottomUpSort") {
+      it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest) {
       }
     }
+
   }
 }
 
