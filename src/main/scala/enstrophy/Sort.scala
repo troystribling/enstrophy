@@ -78,37 +78,40 @@ object ExchangeSort {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // InsertionSort
 object InsertionSortFunctional {
-  def hsort[T:ClassTag](input:Array[T], h:Int)(implicit ordering:Ordering[T]) : Array[T] = {
-    this.hsort(input, Array[T](), h, 1, ordering)
+  def hsort[T:ClassTag](input:List[T], h:Int)(implicit ordering:Ordering[T]) : List[T] = {
+    this.hinsert(input.head, input.tail, h, ordering)
   }
   def sort[T:ClassTag](input:List[T])(implicit ordering:Ordering[T]) : List[T] = {
     if (input.isEmpty) Nil
     else this.insert(input.head, this.sort(input.tail), ordering)
   }
-  private def hsort[T:ClassTag](input:Array[T], output:Array[T], hin:Int, hout:Int, ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
-    case true => output
-    case false =>
-      val happly = if (hout > hin) 1 else hout
-      val nextVal = input.head
-      (happly-1 until output.length by hin).find((i) => ordering.lt(nextVal, output(i))) match {
-        case Some(minIdx) =>
-          val nextOutput = output.splitAt(minIdx)
-          val shiftedOutput = this.shiftRight(nextOutput._2, Array[T](), hin)
-          this.hsort(input.tail, (nextOutput._1 :+ nextVal) ++ shiftedOutput, hin, happly+1, ordering)
-        case None =>
-          this.hsort(input.tail, output :+ nextVal, hin, happly+1, ordering)
-      }
+  private def insert[T](item:T, input:List[T], ordering:Ordering[T]) : List[T] = {
+    if (input.isEmpty || ordering.lt(item, input.head)) item :: input
+    else input.head :: this.insert(item, input.tail, ordering)
   }
+  private def hinsert[T](item:T, input:List[T], h:Int, ordering:Ordering[T]) : List[T] = {
+    input
+  }
+  //private def hsort[T:ClassTag](input:Array[T], output:Array[T], hin:Int, hout:Int, ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
+    //case true => output
+    //case false =>
+      //val happly = if (hout > hin) 1 else hout
+      //val nextVal = input.head
+      //(happly-1 until output.length by hin).find((i) => ordering.lt(nextVal, output(i))) match {
+        //case Some(minIdx) =>
+          //val nextOutput = output.splitAt(minIdx)
+          //val shiftedOutput = this.shiftRight(nextOutput._2, Array[T](), hin)
+          //this.hsort(input.tail, (nextOutput._1 :+ nextVal) ++ shiftedOutput, hin, happly+1, ordering)
+        //case None =>
+          //this.hsort(input.tail, output :+ nextVal, hin, happly+1, ordering)
+      //}
+  //}
   private def shiftRight[T:ClassTag](input:Array[T], output:Array[T], h:Int) : Array[T]  = input.length < h match {
     case true =>
       output ++ input
     case false =>
       val slice = input.take(h)
       this.shiftRight(input.drop(h), (output++slice.tail) :+ slice.head, h)
-  }
-  private def insert[T](item:T, input:List[T], ordering:Ordering[T]) : List[T] = {
-    if (input.isEmpty || ordering.lt(item, input.head)) item :: input
-    else input.head :: this.insert(item, input.tail, ordering)
   }
 }
 
@@ -164,7 +167,12 @@ object ShellSort {
 // arrays can be different sizes but are assumed adjacent first spans lo->mid, second mid+1->h
 object MergeSortFunctional {
   def topDownSort[T](input:List[T])(implicit ordering:Ordering[T]) : List[T]  = {
-    input
+    val n = input.length/2
+    if (n == 0) input
+    else {
+      val (right, left) = input.splitAt(n)
+      SortUtils.mergeFunctional(this.topDownSort(right), this.topDownSort(left))
+    }
   }
 }
 
