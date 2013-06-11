@@ -50,10 +50,13 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     }
 
     describe("Functional implimentation") {
+
+      val sortedIntList = List(1,3,7,8,10,99)
+
       describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with random values", InsertionSortTest) {
-          val intArray = Array(7,99,1,8,10,3)
-          InsertionSortFunctional.sort(intArray) should equal (sortedIntArray)
+        it ("returns a sorted List[Int] when given a List[Int] with random values", InsertionSortTest) {
+          val intList = List(7,99,1,8,10,3)
+          InsertionSortFunctional.sort(intList) should equal (sortedIntList)
         }
       }
       describe("hsort") {
@@ -106,9 +109,7 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
   describe("SortUtils") {
 
-    var mergedIntArray = Array(6,5,2,3,5,6,7,7,9,10,1,4,7)
-
-    object SortUtilsTest extends Tag("us.gnos.enstropy.SortTest.SortUtils")
+    object SortUtilsTest extends Tag("us.gnos.enstropy.SortTest.SortUtilsTest")
 
     describe("hmax") {
       it ("returns the maximum h value used by shell sort when given an array size", SortUtilsTest) {
@@ -121,33 +122,52 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
     describe("merge") {
       it("returns a single sorted Array[Int] when given two serted Array[Int]s", SortUtilsTest) {
-        val mergeIntArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
+        var mergedIntArray = Array(6,5,2,3,5,6,7,7,9,10,1,4,7)
+        var mergeIntArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
         SortUtils.merge(input = mergeIntArray,
                         tmp = new Array[Int](mergeIntArray.length),
                         lo = 2, mid = 5, hi = 9) should equal(mergedIntArray)
       }
     }
 
+    describe("mergeFunctional") {
+      it("returns a single sorted List[Int] when given two serted List[Int]s", SortUtilsTest) {
+        val mergeIntListLeft = List(6,5,3,7,9,10)
+        val mergeIntListRight = List(2,5,6,7,1,4,7)
+        val mergedIntList = List(1,2,3,4,5,5,6,7,7,7,9,10)
+        SortUtils.mergeFunctional(mergeIntListLeft, mergeIntListRight) should equal(mergedIntList)
+      }
+    }
   }
 
   describe("MergeSort") {
 
     var mergeSortedIntArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
 
-    object MergeSortTest extends Tag("us.gnos.enstrophy.SortTest.MergeSort")
+    object MergeSortTest extends Tag("us.gnos.enstrophy.SortTest.MergeSortTest")
 
     describe("topDownSort") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest) {
-        val mergeIntArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
+        var mergeIntArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
         MergeSort.topDownSort(mergeIntArray) should equal(mergeSortedIntArray)
       }
     }
 
     describe("bottomUpSort") {
-      it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest) {
-      }
+      it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest)  (pending)
     }
 
+    describe("Functional Implementation") {
+
+      val mergeSortedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
+
+      describe("topDownSort") {
+        it ("returns a sorted List[Int] when given a List[Int] with random values", MergeSortTest) {
+          val mergeIntList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
+          MergeSortFunctional.topDownSort(mergeIntList) should equal(mergeSortedIntList)
+        }
+      }
+    }
   }
 }
 

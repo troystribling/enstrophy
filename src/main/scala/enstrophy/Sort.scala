@@ -6,7 +6,7 @@ import scala.reflect.ClassTag
 // SortUtils
 object SortUtils {
   def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
-    (array.indices :\ 0) ((idx, minIdx) => if (ordering.gt(array(minIdx), array(idx))) idx else minIdx)
+    (0 /: array.indices) ((minIdx, idx) => if (ordering.gt(array(minIdx), array(idx))) idx else minIdx)
   }
   def isOrdered[T](array:Array[T])(implicit ordering:Ordering[T]) = {
     (1 until array.length).forall((i) => ordering.lteq(array(i-1),array(i)))
@@ -37,6 +37,17 @@ object SortUtils {
       }
     })
     input
+  }
+  def mergeFunctional[T](left:List[T], right:List[T])(implicit ordering:Ordering[T]) : List[T] = (left, right) match {
+    // left is exhausted
+    case (Nil, _) => right
+    // right is exhausted
+    case (_, Nil) => left
+    case (leftHead :: leftTail, rightHead :: rightTail) =>
+      // left is smaller
+      if (ordering.lt(leftHead, rightHead)) leftHead :: this.mergeFunctional(leftTail, right)
+      // right is snmaller
+      else rightHead :: this.mergeFunctional(left, rightTail)
   }
 }
 
@@ -70,8 +81,9 @@ object InsertionSortFunctional {
   def hsort[T:ClassTag](input:Array[T], h:Int)(implicit ordering:Ordering[T]) : Array[T] = {
     this.hsort(input, Array[T](), h, 1, ordering)
   }
-  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    this.hsort(input, Array[T](), 1, 1, ordering)
+  def sort[T:ClassTag](input:List[T])(implicit ordering:Ordering[T]) : List[T] = {
+    if (input.isEmpty) Nil
+    else this.insert(input.head, this.sort(input.tail), ordering)
   }
   private def hsort[T:ClassTag](input:Array[T], output:Array[T], hin:Int, hout:Int, ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
     case true => output
@@ -93,6 +105,10 @@ object InsertionSortFunctional {
     case false =>
       val slice = input.take(h)
       this.shiftRight(input.drop(h), (output++slice.tail) :+ slice.head, h)
+  }
+  private def insert[T](item:T, input:List[T], ordering:Ordering[T]) : List[T] = {
+    if (input.isEmpty || ordering.lt(item, input.head)) item :: input
+    else input.head :: this.insert(item, input.tail, ordering)
   }
 }
 
@@ -146,12 +162,21 @@ object ShellSort {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MergeSort
 // arrays can be different sizes but are assumed adjacent first spans lo->mid, second mid+1->h
+object MergeSortFunctional {
+  def topDownSort[T](input:List[T])(implicit ordering:Ordering[T]) : List[T]  = {
+    input
+  }
+}
+
 object MergeSort {
   def topDownSort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     this.topDownSort(input, new Array[T](input.length), 0, input.length-1, ordering)
   }
 
-  def bottomUpSort[T](input:Array[T])(implicit ordering:Ordering[T]) = {
+  def bottomUpSort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) = {
+    //val n = input.length
+    //var tmp = new Array[T](n)
+    //(Iterator.iterate(1)(2*_) takeWhile (_ < n)) foreach
     input
   }
 
