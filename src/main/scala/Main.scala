@@ -26,11 +26,6 @@ object Main {
     printf("RUNNING SORTS\n")
     (1 to 5).foreach((i:Int) => {
 
-      println("NUMBER OF ELEMENTS: %d".format(i*elements))
-      val valArray = randomArray(i*elements)
-      println("ExchangeSortFunctional")
-      timeSortExecution(ExchangeSortFunctional.sort(valArray))
-
       var varArray = randomArray(i*elements)
       println("ExchangeSort")
       timeSortExecution(ExchangeSort.sort(varArray))

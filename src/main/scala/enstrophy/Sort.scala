@@ -53,19 +53,6 @@ object SortUtils {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ExchangeSort
-object ExchangeSortFunctional {
-  def sort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    this.sort(input, Array[T](), ordering)
-  }
-  private def sort[T:ClassTag](input:Array[T], output:Array[T], ordering:Ordering[T]) : Array[T]  = input.isEmpty match {
-    case true  => output
-    case false =>
-      val minIndex = SortUtils.minIndex(input, ordering)
-      val nextInput = input.splitAt(minIndex)
-      this.sort(nextInput._1 ++ nextInput._2.tail, output :+ input(minIndex), ordering)
-  }
-}
-
 object ExchangeSort {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     input.indices.foreach({(i) =>
@@ -78,40 +65,15 @@ object ExchangeSort {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // InsertionSort
 object InsertionSortFunctional {
-  def hsort[T:ClassTag](input:List[T], h:Int)(implicit ordering:Ordering[T]) : List[T] = {
-    this.hinsert(input.head, input.tail, h, ordering)
-  }
   def sort[T:ClassTag](input:List[T])(implicit ordering:Ordering[T]) : List[T] = {
+    println(input)
     if (input.isEmpty) Nil
     else this.insert(input.head, this.sort(input.tail), ordering)
   }
   private def insert[T](item:T, input:List[T], ordering:Ordering[T]) : List[T] = {
+    println((item, input))
     if (input.isEmpty || ordering.lt(item, input.head)) item :: input
     else input.head :: this.insert(item, input.tail, ordering)
-  }
-  private def hinsert[T](item:T, input:List[T], h:Int, ordering:Ordering[T]) : List[T] = {
-    input
-  }
-  //private def hsort[T:ClassTag](input:Array[T], output:Array[T], hin:Int, hout:Int, ordering:Ordering[T]) : Array[T] =  input.isEmpty match {
-    //case true => output
-    //case false =>
-      //val happly = if (hout > hin) 1 else hout
-      //val nextVal = input.head
-      //(happly-1 until output.length by hin).find((i) => ordering.lt(nextVal, output(i))) match {
-        //case Some(minIdx) =>
-          //val nextOutput = output.splitAt(minIdx)
-          //val shiftedOutput = this.shiftRight(nextOutput._2, Array[T](), hin)
-          //this.hsort(input.tail, (nextOutput._1 :+ nextVal) ++ shiftedOutput, hin, happly+1, ordering)
-        //case None =>
-          //this.hsort(input.tail, output :+ nextVal, hin, happly+1, ordering)
-      //}
-  //}
-  private def shiftRight[T:ClassTag](input:Array[T], output:Array[T], h:Int) : Array[T]  = input.length < h match {
-    case true =>
-      output ++ input
-    case false =>
-      val slice = input.take(h)
-      this.shiftRight(input.drop(h), (output++slice.tail) :+ slice.head, h)
   }
 }
 
@@ -141,16 +103,6 @@ object InsertionSortWithoutExchages {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ShellSort
-object ShellSortFunctional {
-  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    this.sort(input, SortUtils.hmax(input.length), ordering)
-  }
-  private def sort[T](input:Array[T], h:Int, ordering:Ordering[T]) : Array[T] = h < 1 match {
-    case true => input
-    case false => this.sort(InsertionSort.hsort(input, h)(ordering), h/3, ordering)
-  }
-}
-
 object ShellSort {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     var h = SortUtils.hmax(input.length)
@@ -182,9 +134,13 @@ object MergeSort {
   }
 
   def bottomUpSort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) = {
-    //val n = input.length
-    //var tmp = new Array[T](n)
-    //(Iterator.iterate(1)(2*_) takeWhile (_ < n)) foreach
+    val n = input.length
+    var tmp = new Array[T](n)
+    (Iterator.iterate(1)(2*_) takeWhile (_ < n)) foreach ((i) => {
+      (Iterator.iterate(0)(_+2*i) takeWhile(_ < n-i)) foreach ((j) => {
+        SortUtils.merge(input, tmp, j,j+i-1, Math.min(j+2*i-1, n-1))
+      })
+    })
     input
   }
 

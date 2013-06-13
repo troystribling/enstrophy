@@ -8,23 +8,14 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
   describe("ExchangeSort") {
 
-    var sortedIntArray = Array(1,3,7,8,10,99)
-
     object ExchangeSortTest extends Tag("us.gnos.estrophy.SortTest.ExchangeSortTest")
+
+    var sortedIntArray = Array(1,3,7,8,10,99)
 
     describe("sort") {
       it ("returns a sorted Array[Int] when given an Array[Int] with random values", ExchangeSortTest) {
         val intArray = Array(7,99,1,8,10,3)
-        ExchangeSortFunctional.sort(intArray) should equal (sortedIntArray)
-      }
-    }
-
-    describe("Functional implimentation") {
-      describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with random values", ExchangeSortTest) {
-          val intArray = Array(7,99,1,8,10,3)
-          ExchangeSortFunctional.sort(intArray) should equal (sortedIntArray)
-        }
+        ExchangeSort.sort(intArray) should equal (sortedIntArray)
       }
     }
   }
@@ -40,28 +31,13 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
         InsertionSort.sort(intArray) should equal (sortedIntArray)
       }
     }
-    describe("hsort") {
-      it("returns an h sorted Array[Int] when given an Array[Int] with random values and an h value", InsertionSortTest) {
-        var h3sortedIntArray = Array(7,10,1,8,32,3,20,99,21,55,777,89)
-        var hintArray = Array(8,99,1,7,10,89,20,777,21,55,32,3)
-        InsertionSort.hsort(hintArray, 3) should equal (h3sortedIntArray)
-      }
-    }
 
     describe("Functional implimentation") {
-
       describe("sort") {
         it ("returns a sorted List[Int] when given a List[Int] with random values", InsertionSortTest) {
           var sortedIntList = List(1,3,7,8,10,99)
           var intList = List(7,99,1,8,10,3)
           InsertionSortFunctional.sort(intList) should equal (sortedIntList)
-        }
-      }
-      describe("hsort") {
-        it("returns an h sorted Array[Int] when given an Array[Int] with random values and an h value", InsertionSortTest) {
-          val hintList = List(8,99,1,7,10,89,20,777,21,55,32,3)
-          var h3sortedIntList = Array(7,10,1,8,32,3,20,99,21,55,777,89)
-          InsertionSortFunctional.hsort(hintList, 3) should equal (h3sortedIntList)
         }
       }
     }
@@ -77,7 +53,7 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
     describe("Functional implimentation") {
       describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with random values", InsertionSortWithoutExchagesTest) (pending)
+        it ("returns a sorted List[Int] when given an List[Int] with random values", InsertionSortWithoutExchagesTest) (pending)
       }
     }
 
@@ -93,15 +69,6 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
       it ("returns a sorted Array[Int] when given an Array[Int] with random values", ShellSortTest) {
         val shellIntArray = Array(8,99,1,7,10,89,20,777,21,55,32,3)
         ShellSort.sort(shellIntArray) should equal (shellSortedIntArray)
-      }
-    }
-
-    describe("Functional implimentation") {
-      describe("sort") {
-        it ("returns a sorted Array[Int] when given an Array[Int] with random values", ShellSortTest) {
-          val shellIntArray = Array(8,99,1,7,10,89,20,777,21,55,32,3)
-          ShellSortFunctional.sort(shellIntArray) should equal (shellSortedIntArray)
-        }
       }
     }
   }
@@ -153,7 +120,10 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     }
 
     describe("bottomUpSort") {
-      it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest)  (pending)
+      it("returns a sorted Array[Int] when given an Array[Int] with random values", MergeSortTest) {
+        var mergeIntArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
+        MergeSort.bottomUpSort(mergeIntArray) should equal(mergeSortedIntArray)
+      }
     }
 
     describe("Functional Implementation") {
