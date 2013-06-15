@@ -49,6 +49,17 @@ object SortUtils {
       // right is snmaller
       else rightHead :: this.mergeFunctional(left, rightTail)
   }
+  def partition[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Int = {
+    var i = lo - 1; var j = hi + 1; val pivot = input(lo)
+    // scan from left for values less than pivot and right to left for values greater than pivot
+    while(i <= j) {
+      i = ((i + 1) to hi).find(ordering.lt(input(_), pivot))
+      j = ((j - 1) to lo by -1).find(ordering.gt(input(_), pivot))
+      // place larger values to right of pivot and lower to left
+      if (i < j) this.exch(input, i, j)
+    }
+    this.exch(input, j, lo); j
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,12 +77,10 @@ object ExchangeSort {
 // InsertionSort
 object InsertionSortFunctional {
   def sort[T:ClassTag](input:List[T])(implicit ordering:Ordering[T]) : List[T] = {
-    println(input)
     if (input.isEmpty) Nil
     else this.insert(input.head, this.sort(input.tail), ordering)
   }
   private def insert[T](item:T, input:List[T], ordering:Ordering[T]) : List[T] = {
-    println((item, input))
     if (input.isEmpty || ordering.lt(item, input.head)) item :: input
     else input.head :: this.insert(item, input.tail, ordering)
   }
@@ -136,6 +145,7 @@ object MergeSort {
   def bottomUpSort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) = {
     val n = input.length
     var tmp = new Array[T](n)
+    // log n subsets of size i
     (Iterator.iterate(1)(2*_) takeWhile (_ < n)) foreach ((i) => {
       (Iterator.iterate(0)(_+2*i) takeWhile(_ < n-i)) foreach ((j) => {
         SortUtils.merge(input, tmp, j,j+i-1, Math.min(j+2*i-1, n-1))
@@ -154,5 +164,29 @@ object MergeSort {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// QuickSort
+object QuickSortFunctional {
+  def sort[T](input:List[T])(implicit ordering:Oredering[T]) {
+    if (input.length <= 1) input
+    else {
+      val pivot = input.head
+      this.sort(input.filter(pivot < _)) :: input.filter(pivot == _) :: this.sort(input.filter(pivot > _))
+    }
+  }
+}
 
+object QuickSort {
+  def sort[T](input:Arraty[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    this.sort(input, 0, input.lenth-1)
+  }
+  private def sort[T](input:Array[T], lo:Int, hi:Int) : Array[T] = {
+    if (hi <= lo) input
+    else {
+      var split = SortUtils.partition(input, lo, hi, ordering)
+      sort(input, lo, split-1)
+      sort(input, split, hi)
+    }
+  }
+}
 
