@@ -4,7 +4,9 @@ import org.scalatest._
 
 import us.gnos.enstrophy.sort._
 
-class ExchangeSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+trait SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter
+
+class ExchangeSortTest extends SortTest {
 
   describe("ExchangeSort") {
 
@@ -19,7 +21,7 @@ class ExchangeSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
   }
 }
 
-class InsertionSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+class InsertionSortTest extends SortTest {
 
   var sortedIntArray = Array(1,3,7,8,10,99)
   val sortedIntList = List(1,3,7,8,10,99)
@@ -44,7 +46,7 @@ class InsertionSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter 
   }
 }
 
-class InsertionSortWithoutExchagesTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+class InsertionSortWithoutExchagesTest extends SortTest {
 
   describe("InsertionSortWithoutExchange") {
 
@@ -61,7 +63,7 @@ class InsertionSortWithoutExchagesTest extends FunSpec with ShouldMatchers with 
   }
 }
 
-class ShellSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+class ShellSortTest extends SortTest {
 
   var sortedIntArray = Array(1,3,7,8,10,20,21,32,55,89,99,777)
 
@@ -77,7 +79,7 @@ class ShellSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
 }
 
-class SortUtilsTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+class SortUtilsTest extends SortTest {
 
   describe("SortUtils") {
 
@@ -120,7 +122,7 @@ class SortUtilsTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
   }
 }
 
-class MergeSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+class MergeSortTest extends SortTest {
 
   var sortedIntArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
   var intArray: Array[Int] = _
@@ -158,7 +160,7 @@ class MergeSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
   }
 }
 
-class QuickSortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+class QuickSortTest extends SortTest {
 
   val sortedIntedArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
   val sortedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
