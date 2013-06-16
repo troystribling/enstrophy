@@ -49,12 +49,19 @@ object SortUtils {
       // right is snmaller
       else rightHead :: this.mergeFunctional(left, rightTail)
   }
-  def partition[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Int = {
+  def partition[T](input:Array[T], lo:Int, hi:Int)(implicit ordering:Ordering[T]) : Int = {
     var i = lo - 1; var j = hi + 1; val pivot = input(lo)
     // scan from left for values less than pivot and right to left for values greater than pivot
-    while(i <= j) {
-      i = ((i + 1) to hi).find(ordering.lt(input(_), pivot))
-      j = ((j - 1) to lo by -1).find(ordering.gt(input(_), pivot))
+    while(i < j) {
+      i = ((i + 1) to hi).find((k) => ordering.lt(input(k), pivot)) match {
+            case Some(idx) => idx
+            case None => j
+          }
+      j = ((j - 1) to lo by -1).find((k) => ordering.gt(input(k), pivot)) match {
+            case Some(idx) => idx
+            case None => i
+          }
+      println(s"i:$i, j:$j")
       // place larger values to right of pivot and lower to left
       if (i < j) this.exch(input, i, j)
     }
@@ -167,25 +174,30 @@ object MergeSort {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // QuickSort
 object QuickSortFunctional {
-  def sort[T](input:List[T])(implicit ordering:Oredering[T]) {
+  def sort[T](input:List[T])(implicit ordering:Ordering[T]) : List[T] = {
     if (input.length <= 1) input
     else {
       val pivot = input.head
-      this.sort(input.filter(pivot < _)) :: input.filter(pivot == _) :: this.sort(input.filter(pivot > _))
+      this.sort(input.filter((i) => ordering.lt(pivot, i))) ++
+        input.filter((i) => ordering.equiv(pivot, i)) ++
+        this.sort(input.filter((i) => ordering.gt(pivot, i)))
     }
   }
 }
 
 object QuickSort {
-  def sort[T](input:Arraty[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    this.sort(input, 0, input.lenth-1)
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    this.sort(input, 0, input.length-1, ordering)
   }
-  private def sort[T](input:Array[T], lo:Int, hi:Int) : Array[T] = {
+  private def sort[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = {
+    println(input.mkString(","))
+    println(s"lo:$lo, hi:$hi")
     if (hi <= lo) input
     else {
-      var split = SortUtils.partition(input, lo, hi, ordering)
-      sort(input, lo, split-1)
-      sort(input, split, hi)
+      var split = SortUtils.partition(input, lo, hi)(ordering)
+      println(split)
+      this.sort(input, lo, split-1, ordering)
+      this.sort(input, split, hi, ordering)
     }
   }
 }
