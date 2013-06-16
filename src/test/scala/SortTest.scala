@@ -139,18 +139,27 @@ class SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
     }
   }
 
-  decribe("QuickSort") {
+  describe("QuickSort") {
 
-    val quickSortedIntedArray = Array()
+    val quickSortedIntedArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
 
     object QuickSortTest extends Tag("us.gnos.enstrophy.SortTest.QuickSortTest")
 
     describe("sort") {
-      it("returns a sorted Array[Int] when given an Array[Int] with random values", QuickSortTest) (pending)
+      it("returns a sorted Array[Int] when given an Array[Int] with random values", QuickSortTest) {
+        var quickSortIntArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
+        QuickSort.sort(quickSortIntArray) should equal(quickSortedIntedArray)
+      }
     }
 
     describe("Functional Implementation") {
-      it("returns a sorted List[Int] when given a List[Int] with random values", QuickSortTest) (pending)
+
+      val quickSortedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
+
+      it("returns a sorted List[Int] when given a List[Int] with random values", QuickSortTest) {
+        val quickSortIntList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
+        QuickSortFunctional.sort(quickSortIntList) should equal(quickSortedIntList)
+      }
     }
   }
 }

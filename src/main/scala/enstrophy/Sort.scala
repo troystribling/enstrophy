@@ -50,20 +50,22 @@ object SortUtils {
       else rightHead :: this.mergeFunctional(left, rightTail)
   }
   def partition[T](input:Array[T], lo:Int, hi:Int)(implicit ordering:Ordering[T]) : Int = {
-    var i = lo - 1; var j = hi + 1; val pivot = input(lo)
+    var i = lo; var j = hi; val pivot = input(lo)
     // scan from left for values less than pivot and right to left for values greater than pivot
     while(i < j) {
-      i = ((i + 1) to hi).find((k) => ordering.lt(input(k), pivot)) match {
+      i = (i to hi).find((k) => ordering.gt(input(k), pivot)) match {
             case Some(idx) => idx
             case None => j
           }
-      j = ((j - 1) to lo by -1).find((k) => ordering.gt(input(k), pivot)) match {
+      j = (j to lo by -1).find((k) => ordering.lteq(input(k), pivot)) match {
             case Some(idx) => idx
             case None => i
           }
-      println(s"i:$i, j:$j")
       // place larger values to right of pivot and lower to left
-      if (i < j) this.exch(input, i, j)
+      if (i < j) {
+        this.exch(input, i, j)
+        i += 1; j -= 1
+      }
     }
     this.exch(input, j, lo); j
   }
@@ -178,9 +180,9 @@ object QuickSortFunctional {
     if (input.length <= 1) input
     else {
       val pivot = input.head
-      this.sort(input.filter((i) => ordering.lt(pivot, i))) ++
+      this.sort(input.filter((i) => ordering.lt(i, pivot))) ++
         input.filter((i) => ordering.equiv(pivot, i)) ++
-        this.sort(input.filter((i) => ordering.gt(pivot, i)))
+        this.sort(input.filter((i) => ordering.gt(i, pivot)))
     }
   }
 }
@@ -190,14 +192,11 @@ object QuickSort {
     this.sort(input, 0, input.length-1, ordering)
   }
   private def sort[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = {
-    println(input.mkString(","))
-    println(s"lo:$lo, hi:$hi")
     if (hi <= lo) input
     else {
       var split = SortUtils.partition(input, lo, hi)(ordering)
-      println(split)
       this.sort(input, lo, split-1, ordering)
-      this.sort(input, split, hi, ordering)
+      this.sort(input, split+1, hi, ordering)
     }
   }
 }
