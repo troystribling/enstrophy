@@ -34,13 +34,13 @@ class InsertionSortTest extends SortTest {
         InsertionSort.sort(intArray) should equal (sortedIntArray)
       }
     }
+  }
 
-    describe("Functional implimentation") {
-      describe("sort") {
-        it ("returns a sorted List[Int] when given a List[Int] with random values") {
-          val intList = List(7,99,1,8,10,3)
-          InsertionSortFunctional.sort(intList) should equal (sortedIntList)
-        }
+  describe("InsertionSortFunctional") {
+    describe("sort") {
+      it ("returns a sorted List[Int] when given a List[Int] with random values") {
+        val intList = List(7,99,1,8,10,3)
+        InsertionSortFunctional.sort(intList) should equal (sortedIntList)
       }
     }
   }
@@ -137,7 +137,6 @@ class MergeSortTest extends SortTest {
 
     describe("topDownSort") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
-        println(intArray.mkString(","))
         MergeSort.topDownSort(intArray) should equal(sortedIntArray)
       }
     }
@@ -147,17 +146,18 @@ class MergeSortTest extends SortTest {
         MergeSort.bottomUpSort(intArray) should equal(sortedIntArray)
       }
     }
+  }
 
-    describe("Functional Implementation") {
+  describe("MergeSortFunctional") {
 
-      describe("topDownSort") {
-        it ("returns a sorted List[Int] when given a List[Int] with random values") {
-          val intList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
-          MergeSortFunctional.topDownSort(intList) should equal(sortedIntList)
-        }
+    describe("topDownSort") {
+      it ("returns a sorted List[Int] when given a List[Int] with random values") {
+        val intList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
+        MergeSortFunctional.topDownSort(intList) should equal(sortedIntList)
       }
     }
   }
+
 }
 
 class QuickSortTest extends SortTest {
@@ -174,13 +174,15 @@ class QuickSortTest extends SortTest {
       }
     }
 
-    describe("Functional Implementation") {
+  }
 
-      it("returns a sorted List[Int] when given a List[Int] with random values") {
-        val intList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
-        QuickSortFunctional.sort(intList) should equal(sortedIntList)
-      }
+  describe("QuickSortFunctional") {
+
+    it("returns a sorted List[Int] when given a List[Int] with random values") {
+      val intList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
+      QuickSortFunctional.sort(intList) should equal(sortedIntList)
     }
   }
+
 }
 
