@@ -1,6 +1,7 @@
 package us.gnos.enstrophy.sort
 
 import scala.reflect.ClassTag
+import scala.util.Random
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SortUtils
@@ -68,6 +69,9 @@ object SortUtils {
       }
     }
     this.exch(input, j, lo); j
+  }
+  def shuffle[T](input:Array[T]) {
+    (input.length-1 to 0 by -1).foreach((i) => this.exch(input, i, Random.nextInt(i+1)))
   }
 }
 
@@ -177,18 +181,22 @@ object MergeSort {
 // QuickSort
 object QuickSortFunctional {
   def sort[T](input:List[T])(implicit ordering:Ordering[T]) : List[T] = {
+    this.rsort(Random.shuffle(input), ordering)
+  }
+  private def rsort[T](input:List[T], ordering:Ordering[T]) : List[T] = {
     if (input.length <= 1) input
     else {
       val pivot = input.head
-      this.sort(input.filter((i) => ordering.lt(i, pivot))) ++
+      this.rsort(input.filter((i) => ordering.lt(i, pivot)), ordering) ++
         input.filter((i) => ordering.equiv(pivot, i)) ++
-        this.sort(input.filter((i) => ordering.gt(i, pivot)))
+        this.rsort(input.filter((i) => ordering.gt(i, pivot)), ordering)
     }
   }
 }
 
 object QuickSort {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    SortUtils.shuffle(input)
     this.sort(input, 0, input.length-1, ordering)
   }
   private def sort[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = {
