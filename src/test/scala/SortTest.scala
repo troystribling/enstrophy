@@ -162,15 +162,31 @@ class MergeSortTest extends SortTest {
 
 class QuickSortTest extends SortTest {
 
-  val sortedIntedArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
+  var sortedIntArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
   val sortedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
+  var intArray : Array[Int] = _
+
+  before {
+    intArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
+  }
 
   describe("QuickSort") {
 
     describe("sort") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
-        var intArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
-        QuickSort.sort(intArray) should equal(sortedIntedArray)
+        QuickSort.sort(intArray) should equal(sortedIntArray)
+      }
+    }
+
+    describe("sort3Part") {
+      it("returns a sorted Array[Int] when given an Array[Int] with random values") {
+        QuickSort.sort3Part(intArray) should equal(sortedIntArray)
+      }
+    }
+
+    describe("sortCutoff") {
+      it("returns a sorted Array[Int] when given an Array[Int] with random values") {
+        QuickSort.sortCutoff(intArray, 3) should equal(sortedIntArray)
       }
     }
 
