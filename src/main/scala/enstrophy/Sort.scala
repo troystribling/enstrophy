@@ -70,6 +70,18 @@ object SortUtils {
     }
     this.exch(input, j, lo); j
   }
+  def partition3[T](input:Array[T], lo:Int, hi:Int)(implicit ordering:Ordering[T]) : Int = {
+    var i = lo+1; var lt = lo; var gt = hi; val pivot = input(lo)
+    // scan from left for values less than pivot and right to left for values greater than pivot
+    while(i < gt) {
+      val comp = ordering.compare(input(i), pivot)
+      if (comp < 0) {
+      } else if (comp > 0) {
+      } else {
+      }
+    }
+    this.exch(input, gt, lo); gt
+  }
   def shuffle[T](input:Array[T]) {
     (input.length-1 to 0 by -1).foreach((i) => this.exch(input, i, Random.nextInt(i+1)))
   }
@@ -197,14 +209,30 @@ object QuickSortFunctional {
 object QuickSort {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     SortUtils.shuffle(input)
-    this.sort(input, 0, input.length-1, ordering)
+    this.sort(input, 0, input.length-1, 0, ordering)
   }
-  private def sort[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = {
-    if (hi <= lo) input
+  // use triple partitioning to improve performence when large numbers of elements have the same value
+  def sort3Part[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
+    this.sort3Part(input, 0, input.length-1, ordering)
+  }
+  // switch to insertion sort for small arrays
+  def sortCutoff[T](input:Array[T], cutoff:Int)(implicit ordering:Ordering[T]) : Array[T] = {
+    this.sort(input, 0, input.length-1, cutoff, ordering)
+  }
+  private def sort[T](input:Array[T], lo:Int, hi:Int, cutoff:Int, ordering:Ordering[T]) : Array[T] = {
+    if (hi - cutoff <= lo) input
     else {
       var split = SortUtils.partition(input, lo, hi)(ordering)
-      this.sort(input, lo, split-1, ordering)
-      this.sort(input, split+1, hi, ordering)
+      this.sort(input, lo, split-1, cutoff, ordering)
+      this.sort(input, split+1, hi, cutoff, ordering)
+    }
+  }
+  private def sort3Part[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = {
+    if (hi <= lo) input
+    else {
+      var split = SortUtils.partition3(input, lo, hi)(ordering)
+      this.sort3Part(input, lo, split-1, ordering)
+      this.sort3Part(input, split+1, hi, ordering)
     }
   }
 }
