@@ -9,9 +9,6 @@ object SortUtils {
   def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
     (0 /: array.indices) ((minIdx, idx) => if (ordering.gt(array(minIdx), array(idx))) idx else minIdx)
   }
-  def isOrdered[T](array:Array[T])(implicit ordering:Ordering[T]) = {
-    (1 until array.length).forall((i) => ordering.lteq(array(i-1),array(i)))
-  }
   def exch[T](array:Array[T], i:Int, j:Int) = {
     val tmp = array(i); array(i) = array(j); array(j) = tmp
   }
