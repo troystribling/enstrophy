@@ -5,26 +5,37 @@ import scala.util.Random
 import us.gnos.enstrophy.sort._
 
 object SortRunner {
+
+  // utils
+  case class Result(sortType:String, arrayType:String, arraySize:Int, time:Long, isOrdered:Boolean)
+  case class Timing(sort:Array[Int], time:Long)
+
   def isOrdered(array:Array[Int]) = {
     (1 until array.length).forall((i) => array(i-1) <= array(i))
   }
   def time(f: => Array[Int]) = {
     val start = System.currentTimeMillis
     val result = f
-    (result, System.currentTimeMillis - start)
+    Timing(result, System.currentTimeMillis - start)
   }
   // runners
-  def stepSort(sortType:String, arrayType:String) {
-    (1 to 5).foreach((i:Int) => {
-
+  def stepSort(sortType:String, arrayType:String) : Seq[Result] = {
+    (1 to 5).map((i:Int) => {
+      runSort(sortType, arrayType, i)
     })
   }
-  def runSort(sortType:String, arrayType:String, n:Int) {
+  def runSort(sortType:String, arrayType:String, n:Int) = {
     val array = this.array(arrayType, n)
     val sort = this.sort(sortType)
     val result = this.time(sort(array))
-    println(s"EXECUTION TIME: ${result._2} ms")
-    println(s"IS ORDERED: ${this.isOrdered(result._1)}")
+    Result(sortType, arrayType, n, result.time, this.isOrdered(result.sort))
+  }
+  def prettyPrint(result:Result) {
+    println(s"SortType: ${result.sortType}\nArrayType: ${result.arrayType}\nArraySize: ${result.arraySize}\nRunTime: ${result.time} ms\nOrdered: ${result.isOrdered}")
+  }
+  def prettyPrintStepSort(results:Seq[Result]) {
+    println(s"SortType ArrayType ArraySize RunTime Ordered")
+    (0 until results.length).foreach(println(_))
   }
   // sorts
   def sort[T](sortType:String) : (Array[Int]) => Array[Int] = sortType match {
@@ -44,10 +55,12 @@ object Main {
   def main(args:Array[String]) {
     args(0) match {
       case "Sort" =>
-        if (args.length < 4)
+        if (args(1) == "TimeReport") {
+        } else if (args.length < 4) {
           SortRunner.stepSort(args(1), args(2))
-        else
-          SortRunner.runSort(args(1), args(2), args(3).toInt)
+        } else {
+          SortRunner.prettyPrint(SortRunner.runSort(args(1), args(2), args(3).toInt))
+        }
       case "Search" =>
       case "Graph" =>
       case _ => throw new IllegalArgumentException
