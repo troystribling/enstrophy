@@ -8,20 +8,28 @@ object SortRunner {
 
   // utils
   case class Result(sortType:String, arrayType:String, arraySize:Int, time:Long, isOrdered:Boolean)
-  case class Timing(sort:Array[Int], time:Long)
+  case class Timing(sort:Seq[Int], time:Long)
 
-  def isOrdered(array:Array[Int]) = {
+  def isOrdered(array:Seq[Int]) = {
     (1 until array.length).forall((i) => array(i-1) <= array(i))
   }
-  def time(f: => Array[Int]) = {
+  def time(f: => Seq[Int]) = {
     val start = System.currentTimeMillis
     val result = f
     Timing(result, System.currentTimeMillis - start)
   }
   // runners
+  def run(args:Array[String]) {
+    if (args(0) == "TimeReport") {
+    } else if (args.length < 3) {
+      this.prettyPrintStepSort(this.stepSort(args(0), args(1)))
+    } else {
+      this.prettyPrint(this.runSort(args(0), args(1), args(2).toInt))
+    }
+  }
   def stepSort(sortType:String, arrayType:String) : Seq[Result] = {
-    (1 to 5).map((i:Int) => {
-      runSort(sortType, arrayType, i)
+    (1 to 5).map((i) => {
+      runSort(sortType, arrayType, Math.pow(10,i).toInt)
     })
   }
   def runSort(sortType:String, arrayType:String, n:Int) = {
@@ -30,12 +38,20 @@ object SortRunner {
     val result = this.time(sort(array))
     Result(sortType, arrayType, n, result.time, this.isOrdered(result.sort))
   }
+  // io
   def prettyPrint(result:Result) {
-    println(s"SortType: ${result.sortType}\nArrayType: ${result.arrayType}\nArraySize: ${result.arraySize}\nRunTime: ${result.time} ms\nOrdered: ${result.isOrdered}")
+    println(s"SortType: ${result.sortType}\n"+
+            s"ArrayType: ${result.arrayType}\n"+
+            s"ArraySize: ${result.arraySize}\n"+
+            s"RunTime: ${result.time} ms\n"+
+            s"Ordered: ${result.isOrdered}")
   }
   def prettyPrintStepSort(results:Seq[Result]) {
-    println(s"SortType ArrayType ArraySize RunTime Ordered")
-    (0 until results.length).foreach(println(_))
+    println("%-25s %-25s %-15s %-15s %-15s".format("SortType","ArrayType","ArraySize", "RunTime (ms)", "Ordered"))
+    results.foreach((result) => {
+      println("%-25s %-25s %-25d %-25d %-25s".format(
+        result.sortType, result.arrayType, result.arraySize, result.time, if (result.isOrdered) "yes" else "no"))
+    })
   }
   // sorts
   def sort[T](sortType:String) : (Array[Int]) => Array[Int] = sortType match {
@@ -54,13 +70,7 @@ object SortRunner {
 object Main {
   def main(args:Array[String]) {
     args(0) match {
-      case "Sort" =>
-        if (args(1) == "TimeReport") {
-        } else if (args.length < 4) {
-          SortRunner.stepSort(args(1), args(2))
-        } else {
-          SortRunner.prettyPrint(SortRunner.runSort(args(1), args(2), args(3).toInt))
-        }
+      case "Sort" => SortRunner.run(args.tail)
       case "Search" =>
       case "Graph" =>
       case _ => throw new IllegalArgumentException
