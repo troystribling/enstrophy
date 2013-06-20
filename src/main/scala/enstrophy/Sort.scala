@@ -202,7 +202,7 @@ object QuickSort {
     this.sort3Part(input, 0, input.length-1, ordering)
   }
   // switch to insertion sort for small arrays
-  def sortCutoff[T](input:Array[T], cutoff:Int)(implicit ordering:Ordering[T]) : Array[T] = {
+  def sortCutoff[T](cutoff:Int)(input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     SortUtils.shuffle(input)
     this.sortCutoff(input, 0, input.length-1, cutoff, ordering)
   }

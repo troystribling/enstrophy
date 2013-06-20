@@ -6,6 +6,9 @@ import us.gnos.enstrophy.sort._
 
 object SortRunner {
 
+  // params
+  val NSTEPS = 5
+
   // utils
   case class Result(sortType:String, arrayType:String, arraySize:Int, time:Long, isOrdered:Boolean)
   case class Timing(sort:Seq[Int], time:Long)
@@ -20,7 +23,8 @@ object SortRunner {
   }
   // runners
   def run(args:Array[String]) {
-    if (args(0) == "TimeReport") {
+    if (args(0) == "TimingReport") {
+      this.csvPrint(this.reportSort(args(0), args(1)), args(1))
     } else if (args.length < 3) {
       this.prettyPrintStepSort(this.stepSort(args(0), args(1)))
     } else {
@@ -28,7 +32,7 @@ object SortRunner {
     }
   }
   def stepSort(sortType:String, arrayType:String) : Seq[Result] = {
-    (1 to 5).map((i) => {
+    (1 to NSTEPS).map((i) => {
       runSort(sortType, arrayType, Math.pow(10,i).toInt)
     })
   }
@@ -37,6 +41,9 @@ object SortRunner {
     val sort = this.sort(sortType)
     val result = this.time(sort(array))
     Result(sortType, arrayType, n, result.time, this.isOrdered(result.sort))
+  }
+  def reportSort(sortType:String, arrayType:String) = {
+    this.allSorts.map(this.stepSort(_, arrayType))
   }
   // io
   def prettyPrint(result:Result) {
@@ -49,18 +56,48 @@ object SortRunner {
   def prettyPrintStepSort(results:Seq[Result]) {
     println("%-25s %-25s %-15s %-15s %-15s".format("SortType","ArrayType","ArraySize", "RunTime (ms)", "Ordered"))
     results.foreach((result) => {
-      println("%-25s %-25s %-25d %-25d %-25s".format(
+      println("%-25s %-25s %-15d %-15d %-15s".format(
         result.sortType, result.arrayType, result.arraySize, result.time, if (result.isOrdered) "yes" else "no"))
     })
   }
-  // sorts
-  def sort[T](sortType:String) : (Array[Int]) => Array[Int] = sortType match {
-    case "ExchangeSort" =>  ExchangeSort.sort[Int]
+  def csvPrint(results:Seq[Seq[Result]], arrayType:String) {
+    val csvOutput = (1 to NSTEPS).map{(i) => Math.pow(10,0).toInt.toString}
+    (0 until results.length).foreach((i) => {
+      (0 until results(i).length).foreach((j) => {
+        csvOutput(j) + "," + results(i)(j).toString
+      })
+    })
+    val csvFile = new java.io.PrintWriter("report.csv")
+    csvFile.println(arrayType)
+    csvFile.println("ArraySize, ExchangeSort")
+    csvOutput.foreach(println(_))
+    csvFile.close()
   }
+  // sorts
+  def sort(sortType:String) : (Array[Int]) => Array[Int] = sortType match {
+    case "ExchangeSort" =>  ExchangeSort.sort[Int]
+    case "InsertionSort" => InsertionSort.sort[Int]
+    case "ShellSort" => ShellSort.sort[Int]
+    case "MergeSortTopDown" => MergeSort.topDownSort[Int]
+    case "MergeSortBottomUp" => MergeSort.bottomUpSort[Int]
+    case "QuickSort" => QuickSort.sort[Int]
+    case "QuickSort3Part" => QuickSort.sort3Part[Int]
+    case "QuickSortCutoff" => QuickSort.sortCutoff[Int](5)_
+    case _ => throw new IllegalArgumentException("SortType invalid")
+  }
+  def sortFunctional(sortType:String) : (List[Int]) => List[Int] = sortType match {
+    case "InsertionSortFunctional" => InsertionSortFunctional.sort[Int]
+    case "MergeSortFunctional" => MergeSortFunctional.topDownSort[Int]
+    case "QuickSortFunctional" => QuickSortFunctional.sort[Int]
+    case _ => throw new IllegalArgumentException("SortType invalid")
+  }
+  def allSorts = List("ExchangeSort", "InsertionSort","ShellSort", "MergeSortTopDown", "MergeSortBottomUp",
+                      "QuickSort", "QuickSort3Part", "QuickSortCutoff")
+  def allFunctionalSorts = List("InsertionSortFunctional", "MergeSortFunctional", "QuickSortFunctional")
   // arrays
   def array(arrayType:String, n:Int) : Array[Int] = arrayType match {
     case "Random" => this.randomArray(n)
-    case _ => throw new IllegalArgumentException
+    case _ => throw new IllegalArgumentException("ArrayType invalid")
   }
   def randomArray(n:Int) = {
     Array.fill(n)(Random.nextInt(n))
@@ -73,7 +110,7 @@ object Main {
       case "Sort" => SortRunner.run(args.tail)
       case "Search" =>
       case "Graph" =>
-      case _ => throw new IllegalArgumentException
+      case _ => throw new IllegalArgumentException("Runner type must be Sort, Search or Graph")
     }
   }
 }
