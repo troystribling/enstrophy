@@ -37,9 +37,17 @@ object SortRunner {
     })
   }
   def runSort(sortType:String, arrayType:String, n:Int) = {
-    val array = this.array(arrayType, n)
-    val sort = this.sort(sortType)
-    val result = this.time(sort(array))
+    val result = if (this.allSorts.contains(sortType)) {
+                  val array = this.array(arrayType, n)
+                  val sort = this.sort(sortType)
+                  this.time(sort(array))
+                } else if (this.allFunctionalSorts.contains(sortType)) {
+                  val list = this.list(arrayType, n)
+                  val sort = this.sortFunctional(sortType)
+                  this.time(sort(list))
+                } else {
+                  throw new IllegalArgumentException("SortType invalid")
+                }
     Result(sortType, arrayType, n, result.time, this.isOrdered(result.sort))
   }
   def reportSort(sortType:String, arrayType:String) = {
@@ -61,12 +69,10 @@ object SortRunner {
     })
   }
   def csvPrint(results:Seq[Seq[Result]], arrayType:String) {
-    val csvOutput = (1 to NSTEPS).map{(i) => Math.pow(10,0).toInt.toString}
-    (0 until results.length).foreach((i) => {
-      (0 until results(i).length).foreach((j) => {
-        csvOutput(j) + "," + results(i)(j).toString
-      })
-    })
+    var csvOutput = (1 to NSTEPS).toArray.map{(i) => Math.pow(10,0).toInt.toString}
+    for (i <- (0 until results.length); j <- (0 until results(i).length)) {
+        csvOutput(j) = csvOutput(j) + "," + results(i)(j).toString
+    }
     val csvFile = new java.io.PrintWriter("report.csv")
     csvFile.println(arrayType)
     csvFile.println("ArraySize, ExchangeSort")
@@ -101,6 +107,14 @@ object SortRunner {
   }
   def randomArray(n:Int) = {
     Array.fill(n)(Random.nextInt(n))
+  }
+  // lists
+  def list(arrayType:String, n:Int) : List[Int] = arrayType match {
+    case "Random" => this.randomList(n)
+    case _ => throw new IllegalArgumentException("ArrayType invalid")
+  }
+  def randomList(n:Int) = {
+    List.fill(n)(Random.nextInt(n))
   }
 }
 
