@@ -31,6 +31,9 @@ object SortRunner {
       this.prettyPrint(this.runSort(args(0), args(1), args(2).toInt))
     }
   }
+  def compareSort(sortTypes:Array[String], arrayType:String) = {
+    sortTypes.map(this.stepSort(_, arrayType))
+  }
   def stepSort(sortType:String, arrayType:String) : Seq[Result] = {
     (1 to NSTEPS).map((i) => {
       runSort(sortType, arrayType, Math.pow(10,i).toInt)
@@ -51,7 +54,7 @@ object SortRunner {
     Result(sortType, arrayType, n, result.time, this.isOrdered(result.sort))
   }
   def reportSort(sortType:String, arrayType:String) = {
-    this.allSorts.map(this.stepSort(_, arrayType))
+    (this.allSorts++this.allFunctionalSorts).map(this.stepSort(_, arrayType))
   }
   // io
   def prettyPrint(result:Result) {
@@ -68,14 +71,23 @@ object SortRunner {
         result.sortType, result.arrayType, result.arraySize, result.time, if (result.isOrdered) "yes" else "no"))
     })
   }
+  def prettyPrintCompareSort(results:Seq[Seq[Result]], sortTypes:Array[String], arrayType:String) {
+    println(s"ArrayType: ${arrayType}")
+    println("%-15s".format("ArraySize") ++ sortTypes.map("%-20s".format(_)))
+    var output = (1 to NSTEPS).toArray.map((i) => "%-15d".format(Math.pow(10,0).toInt))
+    for(i <- (0 until results.length); j <- (0 until results(i).length)) {
+      output(j) = output(j) + "%-20s".format(results(i)(j))
+    }
+    output.foreach(println(_))
+  }
   def csvPrint(results:Seq[Seq[Result]], arrayType:String) {
-    var csvOutput = (1 to NSTEPS).toArray.map{(i) => Math.pow(10,0).toInt.toString}
+    var csvOutput = (1 to NSTEPS).toArray.map((i) => Math.pow(10,0).toInt.toString)
     for (i <- (0 until results.length); j <- (0 until results(i).length)) {
-        csvOutput(j) = csvOutput(j) + "," + results(i)(j).toString
+        csvOutput(j) = csvOutput(j) + "," + results(i)(j).time.toString
     }
     val csvFile = new java.io.PrintWriter("report.csv")
     csvFile.println(arrayType)
-    csvFile.println("ArraySize, ExchangeSort")
+    csvFile.println("ArraySize,ExchangeSort")
     csvOutput.foreach(println(_))
     csvFile.close()
   }
