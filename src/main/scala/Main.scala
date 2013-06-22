@@ -24,11 +24,20 @@ object SortRunner {
   // runners
   def run(args:Array[String]) {
     if (args(0) == "TimingReport") {
-      this.csvPrint(this.reportSort(args(0), args(1)), args(1))
-    } else if (args.length < 3) {
-      this.prettyPrintStepSort(this.stepSort(args(0), args(1)))
+      // run report for all sorts
+      this.printCSV(this.reportSort(args(0), args(1)), args(1))
     } else {
-      this.prettyPrint(this.runSort(args(0), args(1), args(2).toInt))
+      val sortTypes = args(0).split(":")
+      if (args.length < 3 && sortTypes.length == 1) {
+        // run specified sort for range of array sizes
+        this.prettyPrintStepSort(this.stepSort(sortTypes(0), args(1)))
+      } else if (args.length == 3 && sortTypes.length == 1) {
+        // run speficied sort for specified array size
+        this.prettyPrint(this.runSort(sortTypes(0), args(1), args(2).toInt))
+      } else {
+        // compare specified sorts for a range of array sizes
+        this.prettyPrintCompareSort(this.compareSort(sortTypes, args(1)), sortTypes, args(1))
+      }
     }
   }
   def compareSort(sortTypes:Array[String], arrayType:String) = {
@@ -80,7 +89,7 @@ object SortRunner {
     }
     output.foreach(println(_))
   }
-  def csvPrint(results:Seq[Seq[Result]], arrayType:String) {
+  def printCSV(results:Seq[Seq[Result]], arrayType:String) {
     var csvOutput = (1 to NSTEPS).toArray.map((i) => Math.pow(10,0).toInt.toString)
     for (i <- (0 until results.length); j <- (0 until results(i).length)) {
         csvOutput(j) = csvOutput(j) + "," + results(i)(j).time.toString
