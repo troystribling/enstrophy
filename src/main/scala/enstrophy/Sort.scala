@@ -111,16 +111,6 @@ object InsertionSort {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// InsertionSortWithoutExchanges Problem 2.1.25
-object InsertionSortWithoutExchangesFunctional {
-
-}
-
-object InsertionSortWithoutExchages {
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ShellSort
 object ShellSort {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
@@ -250,7 +240,53 @@ object QuickSort {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Binary Heap
-class BinaryHeap[T] {
+import scala.collection.mutable.ArrayBuffer
+
+class BinaryHeap[T:ClassTag](var size:Int = 0)(implicit ordering:Ordering[T]) {
+  private var heapVals = new ArrayBuffer[T](0)
+  def max : Option[T] = heapVals.headOption
+  def isEmpty = size == 0
+  def toArray : Array[T] = heapVals.toArray
+  def deletMax : Option[T] = heapVals.headOption match {
+    case Some(x) =>
+      heapVals(0) = heapVals.last
+      this.size -= 1
+      this.sink()
+      Some(x)
+    case None => None
+  }
+  def insert(x:T) {
+    this.heapVals.append(x)
+    this.size += 1
+    this.float()
+  }
+  private def float() {
+    // float bottom elemnt up until heap sorted. first find indicies of paraents smaller than last element
+    Iterator.iterate(this.size-1)((i) => (i - 1)/2).takeWhile((k) => k >= 1 && this.less((k-1)/2, k))
+            .foreach((k) => this.exch(k, (k - 1)/2)) // do element excanges
+  }
+  private def sink(k:Int = 0) {
+    // k is index of parent
+    if (2*k+1 < this.size-1) {
+      // j is index of left child
+      var j = 2*k+1
+      // if right child is larger update j to right chaild index
+      if (j < this.size-1 && this.less(j, j+1)) j += 1
+      // stop sinking if largest child is smaller than parent
+      if (this.less(k, j)) {
+        // exchange largest child with parent
+        this.exch(j, k)
+        // go to next level
+        this.sink(j)
+      }
+    }
+  }
+  private def less(i:Int, j:Int) = {
+    this.ordering.gt(this.heapVals(i), this.heapVals(j))
+  }
+  private def exch(i:Int, j:Int) {
+    val tmp = this.heapVals(i); this.heapVals(i) = this.heapVals(j); this.heapVals(j) = tmp;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -46,23 +46,6 @@ class InsertionSortTest extends SortTest {
   }
 }
 
-class InsertionSortWithoutExchagesTest extends SortTest {
-
-  describe("InsertionSortWithoutExchange") {
-
-    describe("sort") {
-      it ("returns a sorted Array[Int] when given an Array[Int] with random values") (pending)
-    }
-
-    describe("Functional implimentation") {
-      describe("sort") {
-        it ("returns a sorted List[Int] when given an List[Int] with random values") (pending)
-      }
-    }
-
-  }
-}
-
 class ShellSortTest extends SortTest {
 
   var sortedIntArray = Array(1,3,7,8,10,20,21,32,55,89,99,777)
