@@ -64,14 +64,16 @@ class ShellSortTest extends SortTest {
 
 class SortUtilsTest extends SortTest {
 
+  object TestObject extends SortUtils
+
   describe("SortUtils") {
 
     describe("hmax") {
       it ("returns the maximum h value used by shell sort when given an array size") {
-        SortUtils.hmax(1) should equal (1)
-        SortUtils.hmax(10) should equal (4)
-        SortUtils.hmax(100) should equal (40)
-        SortUtils.hmax(1000) should equal (364)
+        TestObject.hmax(1) should equal (1)
+        TestObject.hmax(10) should equal (4)
+        TestObject.hmax(100) should equal (40)
+        TestObject.hmax(1000) should equal (364)
       }
     }
 
@@ -79,9 +81,9 @@ class SortUtilsTest extends SortTest {
       it("returns a single sorted Array[Int] when given two serted Array[Int]s") {
         var mergedIntArray = Array(6,5,2,3,5,6,7,7,9,10,1,4,7)
         var intArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
-        SortUtils.merge(input = intArray,
-                        tmp = new Array[Int](intArray.length),
-                        lo = 2, mid = 5, hi = 9) should equal(mergedIntArray)
+        TestObject.merge(input = intArray,
+                         tmp = new Array[Int](intArray.length),
+                         lo = 2, mid = 5, hi = 9) should equal(mergedIntArray)
       }
     }
 
@@ -90,7 +92,7 @@ class SortUtilsTest extends SortTest {
         val mergedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
         val intListLeft = List(3,5,6,7,9,10)
         val intListRight = List(1,2,4,5,6,7,7)
-        SortUtils.mergeFunctional(intListLeft, intListRight) should equal(mergedIntList)
+        TestObject.mergeFunctional(intListLeft, intListRight) should equal(mergedIntList)
       }
     }
 
@@ -98,7 +100,7 @@ class SortUtilsTest extends SortTest {
       it("returns a the index of where the first element would be in the sorted array with all elements less than or equal it to the tleft and all greater to the right") {
         var partitionedArray = Array(5,5,3,4,1,6,2,6,10,7,9,7,7)
         var intArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
-        SortUtils.partition(intArray, 0, intArray.length-1) should equal(7)
+        TestObject.partition(intArray, 0, intArray.length-1) should equal(7)
         intArray should equal(partitionedArray)
       }
     }
@@ -169,7 +171,7 @@ class QuickSortTest extends SortTest {
 
     describe("sortCutoff") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
-        QuickSort.sortCutoff(intArray, 3) should equal(sortedIntArray)
+        QuickSort.sortCutoff(3)(intArray) should equal(sortedIntArray)
       }
     }
 

@@ -5,7 +5,7 @@ import scala.util.Random
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SortUtils
-object SortUtils {
+trait SortUtils {
   def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
     (0 /: array.indices) ((minIdx, idx) => if (ordering.gt(array(minIdx), array(idx))) idx else minIdx)
   }
@@ -74,10 +74,10 @@ object SortUtils {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ExchangeSort
-object ExchangeSort {
+object ExchangeSort extends SortUtils {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     input.indices.foreach({(i) =>
-      SortUtils.exch(input, i, i + SortUtils.minIndex(input.drop(i), ordering))
+      this.exch(input, i, i + this.minIndex(input.drop(i), ordering))
     })
     input
   }
@@ -96,11 +96,11 @@ object InsertionSortFunctional {
   }
 }
 
-object InsertionSort {
+object InsertionSort extends SortUtils {
   def hsort[T](input:Array[T], h:Int)(implicit ordering:Ordering[T]) : Array[T] = {
     (h until input.length).foreach({(i) =>
       for (j <- (i until h-1 by -h) if ordering.lt(input(j), input(j-h))) {
-        SortUtils.exch(input, j, j-h)
+        this.exch(input, j, j-h)
       }
     })
     input
@@ -112,9 +112,9 @@ object InsertionSort {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ShellSort
-object ShellSort {
+object ShellSort extends SortUtils {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    var h = SortUtils.hmax(input.length)
+    var h = this.hmax(input.length)
     while(h >= 1) {
       InsertionSort.hsort(input, h)(ordering)
       h = h/3
@@ -126,18 +126,18 @@ object ShellSort {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MergeSort
 // arrays can be different sizes but are assumed adjacent first spans lo->mid, second mid+1->h
-object MergeSortFunctional {
+object MergeSortFunctional extends SortUtils {
   def topDownSort[T](input:List[T])(implicit ordering:Ordering[T]) : List[T]  = {
     val n = input.length/2
     if (n == 0) input
     else {
       val (right, left) = input.splitAt(n)
-      SortUtils.mergeFunctional(this.topDownSort(right), this.topDownSort(left))
+      this.mergeFunctional(this.topDownSort(right), this.topDownSort(left))
     }
   }
 }
 
-object MergeSort {
+object MergeSort extends SortUtils {
   def topDownSort[T:ClassTag](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
     this.topDownSort(input, new Array[T](input.length), 0, input.length-1, ordering)
   }
@@ -148,7 +148,7 @@ object MergeSort {
     // log n subsets of size i
     (Iterator.iterate(1)(2*_) takeWhile (_ < n)) foreach ((i) => {
       (Iterator.iterate(0)(_+2*i) takeWhile(_ < n-i)) foreach ((j) => {
-        SortUtils.merge(input, tmp, j,j+i-1, Math.min(j+2*i-1, n-1))
+        this.merge(input, tmp, j,j+i-1, Math.min(j+2*i-1, n-1))
       })
     })
     input
@@ -160,7 +160,7 @@ object MergeSort {
       val mid = lo + (hi - lo)/2
       this.topDownSort(input, tmp, lo, mid, ordering)
       this.topDownSort(input, tmp, mid+1, hi, ordering)
-      SortUtils.merge(input, tmp, lo, mid, hi)(ordering)
+      this.merge(input, tmp, lo, mid, hi)(ordering)
   }
 }
 
@@ -181,25 +181,25 @@ object QuickSortFunctional {
   }
 }
 
-object QuickSort {
+object QuickSort extends SortUtils {
   def sort[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    SortUtils.shuffle(input)
+    this.shuffle(input)
     this.sort(input, 0, input.length-1, ordering)
   }
   // use triple partitioning to improve performence when large numbers of elements have the same value
   def sort3Part[T](input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    SortUtils.shuffle(input)
+    this.shuffle(input)
     this.sort3Part(input, 0, input.length-1, ordering)
   }
   // switch to insertion sort for small arrays
   def sortCutoff[T](cutoff:Int)(input:Array[T])(implicit ordering:Ordering[T]) : Array[T] = {
-    SortUtils.shuffle(input)
+    this.shuffle(input)
     this.sortCutoff(input, 0, input.length-1, cutoff, ordering)
   }
   private def sort[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = {
     if (hi <= lo) input
     else {
-      var split = SortUtils.partition(input, lo, hi)(ordering)
+      var split = this.partition(input, lo, hi)(ordering)
       this.sort(input, lo, split-1, ordering)
       this.sort(input, split+1, hi, ordering)
     }
@@ -207,7 +207,7 @@ object QuickSort {
   private def sortCutoff[T](input:Array[T], lo:Int, hi:Int, cutoff:Int, ordering:Ordering[T]) : Array[T] = {
     if (hi - cutoff <= lo) InsertionSort.sort(input)(ordering)
     else {
-      var split = SortUtils.partition(input, lo, hi)(ordering)
+      var split = this.partition(input, lo, hi)(ordering)
       this.sortCutoff(input, lo, split-1, cutoff, ordering)
       this.sortCutoff(input, split+1, hi, cutoff, ordering)
     }
@@ -221,11 +221,11 @@ object QuickSort {
         val comp = ordering.compare(input(i), pivot)
         if (comp < 0) {
         // element less than pivot
-          SortUtils.exch(input, lt, i)
+          this.exch(input, lt, i)
           lt += 1; i += 1
         } else if (comp > 0) {
         // element greater than pivot
-          SortUtils.exch(input, gt, i)
+          this.exch(input, gt, i)
           gt -= 1
         } else {
         // elements are equal
@@ -291,7 +291,7 @@ class BinaryHeap[T:ClassTag](var size:Int = 0)(implicit ordering:Ordering[T]) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Priority queue
-object PriorityQueue {
+class PriorityQueue[T:ClassTag] {
 }
 
 
