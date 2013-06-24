@@ -7,11 +7,8 @@ import us.gnos.enstrophy.sort._
 trait SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter
 
 class ExchangeSortTest extends SortTest {
-
   describe("ExchangeSort") {
-
     var sortedIntArray = Array(1,3,7,8,10,99)
-
     describe("sort") {
       it ("returns a sorted Array[Int] when given an Array[Int] with random values") {
         val intArray = Array(7,99,1,8,10,3)
@@ -22,12 +19,9 @@ class ExchangeSortTest extends SortTest {
 }
 
 class InsertionSortTest extends SortTest {
-
   var sortedIntArray = Array(1,3,7,8,10,99)
   val sortedIntList = List(1,3,7,8,10,99)
-
   describe("InsertionSort") {
-
     describe("sort") {
       it ("returns a sorted Array[Int] when given an Array[Int] with random values") {
         var intArray = Array(7,99,1,8,10,3)
@@ -35,7 +29,6 @@ class InsertionSortTest extends SortTest {
       }
     }
   }
-
   describe("InsertionSortFunctional") {
     describe("sort") {
       it ("returns a sorted List[Int] when given a List[Int] with random values") {
@@ -47,11 +40,8 @@ class InsertionSortTest extends SortTest {
 }
 
 class ShellSortTest extends SortTest {
-
   var sortedIntArray = Array(1,3,7,8,10,20,21,32,55,89,99,777)
-
   describe("ShellSort") {
-
     describe("sort") {
       it ("returns a sorted Array[Int] when given an Array[Int] with random values") {
         var intArray = Array(8,99,1,7,10,89,20,777,21,55,32,3)
@@ -59,15 +49,11 @@ class ShellSortTest extends SortTest {
       }
     }
   }
-
 }
 
 class SortUtilsTest extends SortTest {
-
   object TestObject extends SortUtils
-
   describe("SortUtils") {
-
     describe("hmax") {
       it ("returns the maximum h value used by shell sort when given an array size") {
         TestObject.hmax(1) should equal (1)
@@ -76,7 +62,6 @@ class SortUtilsTest extends SortTest {
         TestObject.hmax(1000) should equal (364)
       }
     }
-
     describe("merge") {
       it("returns a single sorted Array[Int] when given two serted Array[Int]s") {
         var mergedIntArray = Array(6,5,2,3,5,6,7,7,9,10,1,4,7)
@@ -86,7 +71,6 @@ class SortUtilsTest extends SortTest {
                          lo = 2, mid = 5, hi = 9) should equal(mergedIntArray)
       }
     }
-
     describe("mergeFunctional") {
       it("returns a single sorted List[Int] when given two serted List[Int]s") {
         val mergedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
@@ -95,7 +79,6 @@ class SortUtilsTest extends SortTest {
         TestObject.mergeFunctional(intListLeft, intListRight) should equal(mergedIntList)
       }
     }
-
     describe("partition") {
       it("returns a the index of where the first element would be in the sorted array with all elements less than or equal it to the tleft and all greater to the right") {
         var partitionedArray = Array(5,5,3,4,1,6,2,6,10,7,9,7,7)
@@ -108,33 +91,25 @@ class SortUtilsTest extends SortTest {
 }
 
 class MergeSortTest extends SortTest {
-
   var sortedIntArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
   var intArray: Array[Int] = _
-
   val sortedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
-
   before {
     intArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
   }
-
   describe("MergeSort") {
-
     describe("topDownSort") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
         MergeSort.topDownSort(intArray) should equal(sortedIntArray)
       }
     }
-
     describe("bottomUpSort") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
         MergeSort.bottomUpSort(intArray) should equal(sortedIntArray)
       }
     }
   }
-
   describe("MergeSortFunctional") {
-
     describe("topDownSort") {
       it ("returns a sorted List[Int] when given a List[Int] with random values") {
         val intList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
@@ -142,43 +117,33 @@ class MergeSortTest extends SortTest {
       }
     }
   }
-
 }
 
 class QuickSortTest extends SortTest {
-
   var sortedIntArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
   val sortedIntList = List(1,2,3,4,5,5,6,6,7,7,7,9,10)
   var intArray : Array[Int] = _
-
   before {
     intArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
   }
-
   describe("QuickSort") {
-
     describe("sort") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
         QuickSort.sort(intArray) should equal(sortedIntArray)
       }
     }
-
     describe("sort3Part") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
         QuickSort.sort3Part(intArray) should equal(sortedIntArray)
       }
     }
-
     describe("sortCutoff") {
       it("returns a sorted Array[Int] when given an Array[Int] with random values") {
         QuickSort.sortCutoff(3)(intArray) should equal(sortedIntArray)
       }
     }
-
   }
-
   describe("QuickSortFunctional") {
-
     it("returns a sorted List[Int] when given a List[Int] with random values") {
       val intList = List(6,5,3,7,9,10,2,5,6,7,1,4,7)
       QuickSortFunctional.sort(intList) should equal(sortedIntList)
