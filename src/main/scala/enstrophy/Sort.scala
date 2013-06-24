@@ -239,10 +239,10 @@ object QuickSort extends SortUtils {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Binary Heap
+// Priority queue
 import scala.collection.mutable.ArrayBuffer
 
-class BinaryHeap[T:ClassTag](implicit ordering:Ordering[T]) {
+class PriorityQueue[T:ClassTag](implicit ordering:Ordering[T]) {
   private var heapVals = new ArrayBuffer[T](0)
   var size = 0
   def max : Option[T] = heapVals.headOption
@@ -293,11 +293,4 @@ class BinaryHeap[T:ClassTag](implicit ordering:Ordering[T]) {
     val tmp = this.heapVals(i); this.heapVals(i) = this.heapVals(j); this.heapVals(j) = tmp;
   }
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Priority queue
-class PriorityQueue[T:ClassTag] {
-}
-
-
 

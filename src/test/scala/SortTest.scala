@@ -151,49 +151,56 @@ class QuickSortTest extends SortTest {
   }
 }
 
-class BinaryHeapTest extends SortTest {
-  var heap : BinaryHeap[String] = _
+import scala.collection.mutable.ArrayBuffer
+
+class PriorityQueueTest extends SortTest {
+  var queue : PriorityQueue[String] = _
   before {
-    heap = new BinaryHeap[String]
+    queue  = new PriorityQueue[String]
   }
-  describe("BinaryHeap") {
+  describe("PriorityQueue") {
     describe("max") {
       it("returns None when empty") {
-        heap.max should equal(None)
+        queue.max should equal(None)
       }
       it("returns maximum element when not empty") {
-        heap.insertArray(Array("A", "C", "X"))
-        heap.max should equal(Some("X"))
+        queue.insertArray(Array("A", "C", "X"))
+        queue.max should equal(Some("X"))
       }
     }
     describe("isEmpty") {
       it ("returns true when empty") {
-        heap.isEmpty should equal(true)
+        queue.isEmpty should equal(true)
       }
       it ("returns false when not empty") {
-        heap.insert("A"); heap.insert("F"); heap.insert("X")
-        heap.isEmpty should equal(false)
+        queue.insert("A"); queue.insert("F"); queue.insert("X")
+        queue.isEmpty should equal(false)
       }
     }
     describe("deleteMax") {
       it ("returns None when empty") {
-        heap.deleteMax should equal(None)
+        queue.deleteMax should equal(None)
       }
       it ("returns max element removing it maintaining heap order when not empty and new max is left child") {
-        heap.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "U", "I", "R", "K", "L"))
-        heap.deleteMax() should equal(Some("X"))
-        heap.toArray should equal(Array("V", "U", "L", "T", "R", "C", "H", "A", "I", "M", "K"))
+        queue.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "U", "I", "R", "K", "L"))
+        queue.deleteMax() should equal(Some("X"))
+        queue.toArray should equal(Array("V", "U", "L", "T", "R", "C", "H", "A", "I", "M", "K"))
       }
       it ("returns max element removing it maintaining heap order when not empty and new max is right child") {
-        heap.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "W", "I", "R", "K", "L"))
-        heap.deleteMax() should equal(Some("X"))
-        heap.toArray should equal(Array("W", "T", "V", "I", "R", "L", "H", "A", "C", "M", "K"))
+        queue.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "W", "I", "R", "K", "L"))
+        queue.deleteMax() should equal(Some("X"))
+        queue.toArray should equal(Array("W", "T", "V", "I", "R", "L", "H", "A", "C", "M", "K"))
+      }
+      it ("returns all elements ordered from max to min") {
+        queue.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "W", "I", "R", "K", "L"))
+        val sortedValues = (0 until 12).map((idx) => queue.deleteMax().get)
+        sortedValues.toArray should equal(Array("X","W","V","T","R","M","L","K","I","H","C","A"))
       }
     }
     describe("insert") {
       it ("adds elements manitaining heap order") {
-        heap.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "U", "I", "R", "K", "L"))
-        heap.toArray should equal(Array("X","U","V","T","R","L","H","A","I","M","K", "C"))
+        queue.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "U", "I", "R", "K", "L"))
+        queue.toArray should equal(Array("X","U","V","T","R","L","H","A","I","M","K", "C"))
       }
     }
   }
