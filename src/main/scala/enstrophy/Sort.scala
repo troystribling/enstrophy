@@ -242,11 +242,12 @@ object QuickSort extends SortUtils {
 // Binary Heap
 import scala.collection.mutable.ArrayBuffer
 
-class BinaryHeap[T:ClassTag](var size:Int = 0)(implicit ordering:Ordering[T]) {
+class BinaryHeap[T:ClassTag](implicit ordering:Ordering[T]) {
   private var heapVals = new ArrayBuffer[T](0)
+  var size = 0
   def max : Option[T] = heapVals.headOption
   def isEmpty = size == 0
-  def toArray : Array[T] = heapVals.toArray
+  def toArray : Array[T] = heapVals.toArray.take(this.size)
   def deleteMax() : Option[T] = {
     if (this.size > 0) {
       val deletedVal = heapVals(0)
@@ -256,8 +257,10 @@ class BinaryHeap[T:ClassTag](var size:Int = 0)(implicit ordering:Ordering[T]) {
       Some(deletedVal)
     } else None
   }
+  def insertArray(xArray:Array[T]) {
+    xArray.foreach((x) => this.insert(x))
+  }
   def insert(x:T) {
-    println(s"length: ${this.heapVals.length}, size: ${this.size}")
     if (this.heapVals.length > this.size)
       this.heapVals(this.size) = x
     else
