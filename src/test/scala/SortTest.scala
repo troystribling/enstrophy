@@ -6,13 +6,13 @@ import us.gnos.enstrophy.sort._
 
 trait SortTest extends FunSpec with ShouldMatchers with BeforeAndAfter
 
-class ExchangeSortTest extends SortTest {
-  describe("ExchangeSort") {
+class SelectionSortTest extends SortTest {
+  describe("SelectionSort") {
     var sortedIntArray = Array(1,3,7,8,10,99)
     describe("sort") {
       it ("returns a sorted Array[Int] when given an Array[Int] with random values") {
         val intArray = Array(7,99,1,8,10,3)
-        ExchangeSort.sort(intArray) should equal (sortedIntArray)
+        SelectionSort.sort(intArray) should equal (sortedIntArray)
       }
     }
   }
@@ -193,7 +193,10 @@ class PriorityQueueTest extends SortTest {
       }
       it ("returns all elements ordered from max to min") {
         queue.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "W", "I", "R", "K", "L"))
-        val sortedValues = (0 until 12).map((idx) => queue.deleteMax().get)
+        val sortedValues = (0 until 12).foldLeft(ArrayBuffer[String]())((result, idx) => {
+            result.append(queue.deleteMax().get)
+            result
+          })
         sortedValues.toArray should equal(Array("X","W","V","T","R","M","L","K","I","H","C","A"))
       }
     }

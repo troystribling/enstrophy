@@ -96,13 +96,13 @@ object SortRunner {
     }
     val csvFile = new java.io.PrintWriter("report.csv")
     csvFile.println(arrayType)
-    csvFile.println("ArraySize,ExchangeSort")
+    csvFile.println("ArraySize,SelectionSort")
     csvOutput.foreach(println(_))
     csvFile.close()
   }
   // sorts
   def sort(sortType:String) : (Array[Int]) => Array[Int] = sortType match {
-    case "ExchangeSort" =>  ExchangeSort.sort[Int]
+    case "SelectionSort" =>  SelectionSort.sort[Int]
     case "InsertionSort" => InsertionSort.sort[Int]
     case "ShellSort" => ShellSort.sort[Int]
     case "MergeSortTopDown" => MergeSort.topDownSort[Int]
@@ -118,7 +118,7 @@ object SortRunner {
     case "QuickSortFunctional" => QuickSortFunctional.sort[Int]
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
-  def allSorts = List("ExchangeSort", "InsertionSort","ShellSort", "MergeSortTopDown", "MergeSortBottomUp",
+  def allSorts = List("SelectionSort", "InsertionSort","ShellSort", "MergeSortTopDown", "MergeSortBottomUp",
                       "QuickSort", "QuickSort3Part", "QuickSortCutoff")
   def allFunctionalSorts = List("InsertionSortFunctional", "MergeSortFunctional", "QuickSortFunctional")
   // arrays
