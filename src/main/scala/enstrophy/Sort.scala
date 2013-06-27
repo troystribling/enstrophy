@@ -298,32 +298,37 @@ class PriorityQueue[T:ClassTag](implicit ordering:Ordering[T]) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HeapSort
 object HeapSort extends SortUtils {
-  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) {
+  def sort[T](input:Array[T])(implicit ordering:Ordering[T]) = {
     val n = input.length
     // put array in heap order
-    ((n-1)/2 to 1 by -1).foreach((i) => {
-      this.sink(input, i, n-1, ordering)
+    // for k > (n-1)/2 all elements are leaves so sorting can begin at k = (n-1)/2
+    ((n-1)/2 to 0 by -1).foreach((i) => {
+      this.sink(input, i, n, ordering)
     })
+    println(input.mkString(","))
     (n - 1 until 0 by -1).foreach((i) => {
       // move largest element to end of unsorted portion of array
       this.exch(input, 0, i)
       // place unsorted portion of array in heap order
       this.sink(input, 0, i-1, ordering)
     })
+    input
   }
   private def sink[T](input:Array[T], k:Int, n:Int, ordering:Ordering[T]) {
     // k is index of parent, j is index of left child
     var j = 2*k+1
-    // if right child is larger update j to right chaild index
     println(s"k=${k}, j=${j}, n=${n}")
-    if ((j < n-1) && this.less(input, j, j+1, ordering)) j += 1
-    println(s"j=${j}")
-    // sink further if parent is less than largest child
-    if (this.less(input, k, j, ordering)) {
-      // exchange largest child with parent
-      this.exch(input, j, k)
-      // go to next level if not leaf
-      if (2*j+1 < n) this.sink(input, j, n, ordering)
+    if (j < n) {
+      // if right child is larger update j to right chaild index
+      if ((j < n-1) && this.less(input, j, j+1, ordering)) j += 1
+      println(s"j=${j}")
+      // sink further if parent is less than largest child
+      if (this.less(input, k, j, ordering)) {
+        // exchange largest child with parent
+        this.exch(input, j, k)
+        // go to next level if not leaf
+        if (2*j+1 < n) this.sink(input, j, n, ordering)
+      }
     }
   }
   private def less[T](input:Array[T], i:Int, j:Int, ordering:Ordering[T]) = {
