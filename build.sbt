@@ -182,5 +182,6 @@ assemblySettings
 
 test in AssemblyKeys.assembly := {}
 
-initialCommands  in console := "import us.gnos.enstrophy.sort._"
+initialCommands  in console := 
+  "import us.gnos.enstrophy.sort._; import us.gnos.enstrophy.SortRunner"
 
