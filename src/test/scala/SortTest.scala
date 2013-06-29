@@ -152,7 +152,6 @@ class QuickSortTest extends SortTest {
 }
 
 import scala.collection.mutable.ArrayBuffer
-
 class PriorityQueueTest extends SortTest {
   var queue : PriorityQueue[String] = _
   before {
@@ -201,10 +200,20 @@ class PriorityQueueTest extends SortTest {
       }
     }
     describe("insert") {
-      it ("adds elements manitaining heap order") {
+      it  ("adds elements manitaining heap order") {
         queue.insertArray(Array("A", "C", "X", "T", "M", "V", "H", "U", "I", "R", "K", "L"))
         queue.toArray should equal(Array("X","U","V","T","R","L","H","A","I","M","K", "C"))
       }
+    }
+  }
+}
+
+class HeapSortTest extends SortTest {
+  var sortedIntArray = Array(1,2,3,4,5,5,6,6,7,7,7,9,10)
+  describe("HeapSort") {
+    it("returns a sorted Array[Int] when given a Array[Int] with random values") {
+      var intArray = Array(6,5,3,7,9,10,2,5,6,7,1,4,7)
+      HeapSort.sort(intArray) should equal(sortedIntArray)
     }
   }
 }

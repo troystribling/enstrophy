@@ -305,26 +305,20 @@ object HeapSort extends SortUtils {
     ((n-2)/2 to 0 by -1).foreach((i) => {
       this.sink(input, i, n, ordering)
     })
-    println(s"HEAP ORDERED: ${input.mkString(",")}")
     (n - 1 to 1 by -1).foreach((i) => {
       // move largest element to end of unsorted portion of array
       this.exch(input, 0, i)
-      println(s"EXCHANGE: ${input.mkString(",")}")
       // place unsorted portion of array in heap order
       this.sink(input, 0, i, ordering)
-      println(s"SUNK ${input.mkString(",")}")
     })
     input
   }
   private def sink[T](input:Array[T], k:Int, n:Int, ordering:Ordering[T]) {
     // k is index of parent, j is index of left child
     var j = 2*k+1
-    println(s"SINK ${input.mkString(",")}")
-    println(s"k=${k}, j=${j}, n=${n}")
     if (j < n) {
       // if right child is larger update j to right chaild index
       if ((j < n-1) && this.less(input, j, j+1, ordering)) j += 1
-      println(s"j=${j}")
       // sink further if parent is less than largest child
       if (this.less(input, k, j, ordering)) {
         // exchange largest child with parent
