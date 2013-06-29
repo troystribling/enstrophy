@@ -23,17 +23,17 @@ object SortRunner {
   }
   // runners
   def run(args:Array[String]) {
-    if (args(0) == "TimingReport") {
+    if (args.length == 1) {
       // run report for all sorts
-      this.printCSV(this.reportSort(args(0), args(1)), args(1))
+      this.printCSV(this.reportSort(args(0)), args(0))
     } else {
-      val sortTypes = args(0).split(":")
+      val sortTypes = args(1).split(":")
       if (args.length < 3 && sortTypes.length == 1) {
         // run specified sort for range of array sizes
-        this.prettyPrintStepSort(this.stepSort(sortTypes(0), args(1)))
+        this.prettyPrintStepSort(this.stepSort(sortTypes(0), args(0)))
       } else if (args.length == 3 && sortTypes.length == 1) {
         // run speficied sort for specified array size
-        this.prettyPrint(this.runSort(sortTypes(0), args(1), args(2).toInt))
+        this.prettyPrint(this.runSort(sortTypes(0), args(0), args(2).toInt))
       } else {
         // compare specified sorts for a range of array sizes
         this.prettyPrintCompareSort(this.compareSort(sortTypes, args(1)), sortTypes, args(1))
@@ -62,8 +62,11 @@ object SortRunner {
                 }
     Result(sortType, arrayType, n, result.time, this.isOrdered(result.sort))
   }
-  def reportSort(sortType:String, arrayType:String) = {
-    (this.allSorts++this.allFunctionalSorts).map(this.stepSort(_, arrayType))
+  def reportSort(arrayType:String) = {
+    (this.allSorts++this.allFunctionalSorts).map((sortType) => {
+        println(s"SortType: ${sortType}, ArrayType: ${arrayType}")
+        this.stepSort(sortType, arrayType)}
+    )
   }
   // io
   def prettyPrint(result:Result) {
@@ -74,10 +77,12 @@ object SortRunner {
             s"Ordered: ${result.isOrdered}")
   }
   def prettyPrintStepSort(results:Seq[Result]) {
-    println("%-25s %-25s %-15s %-15s %-15s".format("SortType","ArrayType","ArraySize", "RunTime (ms)", "Ordered"))
+    println(s"SortType: ${results.head.sortType}")
+    println(s"ArrayType: ${results.head.arrayType}")
+    println("%-15s %-15s %-15s".format("ArraySize", "RunTime (ms)", "Ordered"))
     results.foreach((result) => {
-      println("%-25s %-25s %-15d %-15d %-15s".format(
-        result.sortType, result.arrayType, result.arraySize, result.time, if (result.isOrdered) "yes" else "no"))
+      println("%-15d %-15d %-15s".format(
+        result.arraySize, result.time, if (result.isOrdered) "yes" else "no"))
     })
   }
   def prettyPrintCompareSort(results:Seq[Seq[Result]], sortTypes:Array[String], arrayType:String) {
@@ -110,6 +115,7 @@ object SortRunner {
     case "QuickSort" => QuickSort.sort[Int]
     case "QuickSort3Part" => QuickSort.sort3Part[Int]
     case "QuickSortCutoff" => QuickSort.sortCutoff[Int](5)_
+    case "HeapSort" => HeapSort.sort[Int]
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
   def sortFunctional(sortType:String) : (List[Int]) => List[Int] = sortType match {
@@ -119,13 +125,14 @@ object SortRunner {
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
   def allSorts = List("SelectionSort", "InsertionSort","ShellSort", "MergeSortTopDown", "MergeSortBottomUp",
-                      "QuickSort", "QuickSort3Part", "QuickSortCutoff")
+                      "QuickSort", "QuickSort3Part", "QuickSortCutoff", "HeapSort")
   def allFunctionalSorts = List("InsertionSortFunctional", "MergeSortFunctional", "QuickSortFunctional")
   // arrays
   def array(arrayType:String, n:Int) : Array[Int] = arrayType match {
     case "Random" => this.randomArray(n)
     case _ => throw new IllegalArgumentException("ArrayType invalid")
   }
+  def allArrays = List("Random")
   def randomArray(n:Int) = {
     Array.fill(n)(Random.nextInt(n))
   }
@@ -140,12 +147,25 @@ object SortRunner {
 }
 
 object Main {
+  val help = s"""
+    run Sort ArrayType                  run all SortTypes for multiple sizes of ArrayType
+    run Sort ArrayType SortType         run SortType for multiple sizes of ArrayType
+    run Sort ArrayType SportType Steps  run SortType for ArrayTpe with Size
+
+    ArrayTypes: ${SortRunner.allArrays.mkString(",")}
+
+    SortTypes: ${(SortRunner.allSorts ++ SortRunner.allFunctionalSorts).mkString(",")}
+  """
   def main(args:Array[String]) {
-    args(0) match {
-      case "Sort" => SortRunner.run(args.tail)
-      case "Search" =>
-      case "Graph" =>
-      case _ => throw new IllegalArgumentException("Runner type must be Sort, Search or Graph")
+    if (args.isEmpty) {
+      println(help)
+    } else {
+      args(0) match {
+        case "Sort" => SortRunner.run(args.tail)
+        case "Search" =>
+        case "Graph" =>
+        case _ => throw new IllegalArgumentException("Runner type must be Sort, Search or Graph")
+      }
     }
   }
 }
