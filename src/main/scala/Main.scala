@@ -8,6 +8,7 @@ object SortRunner {
 
   // params
   val NSTEPS = 6
+  val QUICK_SORT_CUTOFFS = List(5, 10, 20, 30, 40, 50, 100, 200)
 
   // utils
   case class Result(sortType:String, arrayType:String, arraySize:Int, time:Long, isOrdered:Boolean)
@@ -26,6 +27,8 @@ object SortRunner {
     if (args.length == 1) {
       // run report for all sorts
       this.printCSV(this.reportSort(args(0)), args(0))
+    } else if (args(1) == "QuickSortCutoffScan") {
+      this.prettyPrintQuickSortCutoffScan(this.quickSortCutoffScan(args(0)), args(0))
     } else {
       val sortTypes = args(1).split(":")
       if (args.length < 3 && sortTypes.length == 1) {
@@ -50,7 +53,7 @@ object SortRunner {
   }
   def runSort(sortType:String, arrayType:String, n:Int) = {
     val result = if (this.allSorts.contains(sortType)) {
-                  val array = this.array(arrayType, n)
+                  var array = this.array(arrayType, n)
                   val sort = this.sort(sortType)
                   this.time(sort(array))
                 } else if (this.allFunctionalSorts.contains(sortType)) {
@@ -68,6 +71,15 @@ object SortRunner {
         this.stepSort(sortType, arrayType)}
     )
   }
+  def quickSortCutoffScan(arrayType:String) : Seq[Result] = {
+    val arraySize = 1000000
+    QUICK_SORT_CUTOFFS.map((cutoff) => {
+      var array = this.array(arrayType, arraySize)
+      val sort = QuickSort.sortCutoff[Int](cutoff)_
+      val result = this.time(sort(array))
+      Result("QuickSortCutoff", arrayType, arraySize, result.time, this.isOrdered(result.sort))
+    })
+  }
   // io
   def prettyPrint(result:Result) {
     println(s"SortType: ${result.sortType}\n"+
@@ -83,6 +95,16 @@ object SortRunner {
     results.foreach((result) => {
       println("%-15d %-15d %-15s".format(
         result.arraySize, result.time, if (result.isOrdered) "yes" else "no"))
+    })
+  }
+  def prettyPrintQuickSortCutoffScan(results:Seq[Result], arrayType:String) {
+    println(s"SortType: QuickSortCutoff")
+    println(s"ArrayType: ${results.head.arrayType}")
+    println("%-15s %-15s %-15s %-15s".format("ArraySize", "Cutoff", "RunTime (ms)", "Ordered"))
+    (0 until results.length).foreach((i) => {
+      val result = results(i)
+      println("%-15d %-15d %-15s %-15s".format(
+        result.arraySize, QUICK_SORT_CUTOFFS(i), result.time, if (result.isOrdered) "yes" else "no"))
     })
   }
   def prettyPrintCompareSort(results:Seq[Seq[Result]], sortTypes:Array[String], arrayType:String) {
@@ -148,9 +170,10 @@ object SortRunner {
 
 object Main {
   val help = s"""
-    run Sort ArrayType                  run all SortTypes for multiple sizes of ArrayType
-    run Sort ArrayType SortType         run SortType for multiple sizes of ArrayType
-    run Sort ArrayType SportType Steps  run SortType for ArrayTpe with Size
+    run Sort ArrayType                      run all SortTypes for multiple sizes of ArrayType
+    run Sort ArrayType QuickSortCutoffScan  run QuickSortCutoffScan for multiple cutoffs
+    run Sort ArrayType SortType             run SortType for multiple sizes of ArrayType
+    run Sort ArrayType SportType Steps      run SortType for ArrayTpe with Size
 
     ArrayTypes: ${SortRunner.allArrays.mkString(",")}
 
