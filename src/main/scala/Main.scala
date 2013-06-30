@@ -7,7 +7,7 @@ import us.gnos.enstrophy.sort._
 object SortRunner {
 
   // params
-  val NSTEPS = 6
+  val NSTEPS = 5
   val QUICK_SORT_CUTOFFS = List(5, 10, 20, 30, 40, 50, 100, 200)
 
   // utils
