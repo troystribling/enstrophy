@@ -30,17 +30,6 @@ object SelectionSort extends SortUtils {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // InsertionSort
-object InsertionSortFunctional {
-  def sort[T:ClassTag](input:List[T])(implicit ordering:Ordering[T]) : List[T] = {
-    if (input.isEmpty) Nil
-    else this.insert(input.head, this.sort(input.tail), ordering)
-  }
-  private def insert[T](item:T, input:List[T], ordering:Ordering[T]) : List[T] = {
-    if (input.isEmpty || ordering.lt(item, input.head)) item :: input
-    else input.head :: this.insert(item, input.tail, ordering)
-  }
-}
-
 object InsertionSort extends SortUtils {
   def hsort[T](input:Array[T], h:Int)(implicit ordering:Ordering[T]) : Array[T] = {
     (h until input.length).foreach({(i) =>

@@ -119,14 +119,13 @@ object SortRunner {
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
   def sortFunctional(sortType:String) : (List[Int]) => List[Int] = sortType match {
-    case "InsertionSortFunctional" => InsertionSortFunctional.sort[Int]
     case "MergeSortFunctional" => MergeSortFunctional.topDownSort[Int]
     case "QuickSortFunctional" => QuickSortFunctional.sort[Int]
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
   def allSorts = List("SelectionSort", "InsertionSort","ShellSort", "MergeSortTopDown", "MergeSortBottomUp",
                       "QuickSort", "QuickSort3Part", "QuickSortCutoff", "HeapSort")
-  def allFunctionalSorts = List("InsertionSortFunctional", "MergeSortFunctional", "QuickSortFunctional")
+  def allFunctionalSorts = List("MergeSortFunctional", "QuickSortFunctional")
   // arrays
   def array(arrayType:String, n:Int) : Array[Int] = arrayType match {
     case "Random" => this.randomArray(n)

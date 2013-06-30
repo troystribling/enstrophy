@@ -29,14 +29,6 @@ class InsertionSortTest extends SortTest {
       }
     }
   }
-  describe("InsertionSortFunctional") {
-    describe("sort") {
-      it ("returns a sorted List[Int] when given a List[Int] with random values") {
-        val intList = List(7,99,1,8,10,3)
-        InsertionSortFunctional.sort(intList) should equal (sortedIntList)
-      }
-    }
-  }
 }
 
 class ShellSortTest extends SortTest {
