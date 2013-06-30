@@ -136,7 +136,7 @@ object SortRunner {
     case "MergeSortBottomUp" => MergeSort.bottomUpSort[Int]
     case "QuickSort" => QuickSort.sort[Int]
     case "QuickSort3Part" => QuickSort.sort3Part[Int]
-    case "QuickSortCutoff" => QuickSort.sortCutoff[Int](5)_
+    case "QuickSortCutoff" => QuickSort.sortCutoff[Int](10)_
     case "HeapSort" => HeapSort.sort[Int]
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
