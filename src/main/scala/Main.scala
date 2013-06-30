@@ -7,7 +7,7 @@ import us.gnos.enstrophy.sort._
 object SortRunner {
 
   // params
-  val NSTEPS = 5
+  val NSTEPS = 6
 
   // utils
   case class Result(sortType:String, arrayType:String, arraySize:Int, time:Long, isOrdered:Boolean)
