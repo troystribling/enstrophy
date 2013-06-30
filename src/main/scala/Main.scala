@@ -63,7 +63,7 @@ object SortRunner {
     Result(sortType, arrayType, n, result.time, this.isOrdered(result.sort))
   }
   def reportSort(arrayType:String) = {
-    (this.allSorts++this.allFunctionalSorts).map((sortType) => {
+    this.allSorts.map((sortType) => {
         println(s"SortType: ${sortType}, ArrayType: ${arrayType}")
         this.stepSort(sortType, arrayType)}
     )
@@ -95,14 +95,14 @@ object SortRunner {
     output.foreach(println(_))
   }
   def printCSV(results:Seq[Seq[Result]], arrayType:String) {
-    var csvOutput = (1 to NSTEPS).toArray.map((i) => Math.pow(10,0).toInt.toString)
+    var csvOutput = (1 to NSTEPS).toArray.map((i) => Math.pow(10,i).toInt.toString)
     for (i <- (0 until results.length); j <- (0 until results(i).length)) {
         csvOutput(j) = csvOutput(j) + "," + results(i)(j).time.toString
     }
     val csvFile = new java.io.PrintWriter("report.csv")
-    csvFile.println(arrayType)
-    csvFile.println("ArraySize,SelectionSort")
-    csvOutput.foreach(println(_))
+    csvFile.println(s"ArratType: ${arrayType}")
+    csvFile.println(this.allSorts.mkString(","))
+    csvOutput.foreach(csvFile.println(_))
     csvFile.close()
   }
   // sorts
@@ -119,13 +119,14 @@ object SortRunner {
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
   def sortFunctional(sortType:String) : (List[Int]) => List[Int] = sortType match {
+    case "InsertionSortFunctional" => InsertionSortFunctional.sort[Int]
     case "MergeSortFunctional" => MergeSortFunctional.topDownSort[Int]
     case "QuickSortFunctional" => QuickSortFunctional.sort[Int]
     case _ => throw new IllegalArgumentException("SortType invalid")
   }
   def allSorts = List("SelectionSort", "InsertionSort","ShellSort", "MergeSortTopDown", "MergeSortBottomUp",
                       "QuickSort", "QuickSort3Part", "QuickSortCutoff", "HeapSort")
-  def allFunctionalSorts = List("MergeSortFunctional", "QuickSortFunctional")
+  def allFunctionalSorts = List("InsertionSortFunctional", "MergeSortFunctional", "QuickSortFunctional")
   // arrays
   def array(arrayType:String, n:Int) : Array[Int] = arrayType match {
     case "Random" => this.randomArray(n)
