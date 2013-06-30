@@ -6,66 +6,8 @@ import scala.util.Random
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SortUtils
 trait SortUtils {
-  def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
-    (0 /: array.indices) ((minIdx, idx) => if (ordering.gt(array(minIdx), array(idx))) idx else minIdx)
-  }
   def exch[T](array:Array[T], i:Int, j:Int) = {
     val tmp = array(i); array(i) = array(j); array(j) = tmp
-  }
-  def hmax(n:Int, h:Int = 1) : Int = n/3 > h match {
-    case true => this.hmax(n, 3*h+1)
-    case false => h
-  }
-  def merge[T](input:Array[T], tmp:Array[T], lo:Int, mid:Int, hi:Int)(implicit ordering:Ordering[T]) = {
-    var i = lo; var j = mid+1
-    (lo to hi).foreach((k) => tmp(k) = input(k))
-    (lo to hi).foreach((k) => {
-      if (i > mid) {
-        // first array is exhausted
-        input(k) = tmp(j); j += 1
-      } else if (j > hi) {
-        // second array is exhausted
-        input(k) = tmp(i); i += 1
-      } else if (ordering.lt(tmp(j), tmp(i))) {
-        // smaller value is second array
-        input(k) = tmp(j); j += 1
-      } else {
-        // smaller value is in first array
-        input(k) = tmp(i); i += 1
-      }
-    })
-    input
-  }
-  def mergeFunctional[T](left:List[T], right:List[T])(implicit ordering:Ordering[T]) : List[T] = (left, right) match {
-    // left is exhausted
-    case (Nil, _) => right
-    // right is exhausted
-    case (_, Nil) => left
-    case (leftHead :: leftTail, rightHead :: rightTail) =>
-      // left is smaller
-      if (ordering.lt(leftHead, rightHead)) leftHead :: this.mergeFunctional(leftTail, right)
-      // right is snmaller
-      else rightHead :: this.mergeFunctional(left, rightTail)
-  }
-  def partition[T](input:Array[T], lo:Int, hi:Int)(implicit ordering:Ordering[T]) : Int = {
-    var i = lo; var j = hi; val pivot = input(lo)
-    // scan from left for values less than pivot and right to left for values greater than pivot
-    while(i < j) {
-      i = (i to hi).find((k) => ordering.gt(input(k), pivot)) match {
-            case Some(idx) => idx
-            case None => j
-          }
-      j = (j to lo by -1).find((k) => ordering.lteq(input(k), pivot)) match {
-            case Some(idx) => idx
-            case None => i
-          }
-      // place larger values to right of pivot and lower to left
-      if (i < j) {
-        this.exch(input, i, j)
-        i += 1; j -= 1
-      }
-    }
-    this.exch(input, j, lo); j
   }
   def shuffle[T](input:Array[T]) {
     (input.length-1 to 0 by -1).foreach((i) => this.exch(input, i, Random.nextInt(i+1)))
@@ -80,6 +22,9 @@ object SelectionSort extends SortUtils {
       this.exch(input, i, i + this.minIndex(input.drop(i), ordering))
     })
     input
+  }
+  def minIndex[T](array:Array[T], ordering:Ordering[T])  = {
+    (0 /: array.indices) ((minIdx, idx) => if (ordering.gt(array(minIdx), array(idx))) idx else minIdx)
   }
 }
 
@@ -121,6 +66,10 @@ object ShellSort extends SortUtils {
     }
     input
   }
+  def hmax(n:Int, h:Int = 1) : Int = n/3 > h match {
+    case true => this.hmax(n, 3*h+1)
+    case false => h
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,8 +81,19 @@ object MergeSortFunctional extends SortUtils {
     if (n == 0) input
     else {
       val (right, left) = input.splitAt(n)
-      this.mergeFunctional(this.topDownSort(right), this.topDownSort(left))
+      this.merge(this.topDownSort(right), this.topDownSort(left))
     }
+  }
+  def merge[T](left:List[T], right:List[T])(implicit ordering:Ordering[T]) : List[T] = (left, right) match {
+    // left is exhausted
+    case (Nil, _) => right
+    // right is exhausted
+    case (_, Nil) => left
+    case (leftHead :: leftTail, rightHead :: rightTail) =>
+      // left is smaller
+      if (ordering.lt(leftHead, rightHead)) leftHead :: this.merge(leftTail, right)(ordering)
+      // right is snmaller
+      else rightHead :: this.merge(left, rightTail)(ordering)
   }
 }
 
@@ -153,7 +113,26 @@ object MergeSort extends SortUtils {
     })
     input
   }
-
+  def merge[T](input:Array[T], tmp:Array[T], lo:Int, mid:Int, hi:Int)(implicit ordering:Ordering[T]) = {
+    var i = lo; var j = mid+1
+    (lo to hi).foreach((k) => tmp(k) = input(k))
+    (lo to hi).foreach((k) => {
+      if (i > mid) {
+        // first array is exhausted
+        input(k) = tmp(j); j += 1
+      } else if (j > hi) {
+        // second array is exhausted
+        input(k) = tmp(i); i += 1
+      } else if (ordering.lt(tmp(j), tmp(i))) {
+        // smaller value is second array
+        input(k) = tmp(j); j += 1
+      } else {
+        // smaller value is in first array
+        input(k) = tmp(i); i += 1
+      }
+    })
+    input
+  }
   private def topDownSort[T](input:Array[T], tmp:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = hi <= lo match  {
     case true => input
     case false =>
@@ -196,6 +175,25 @@ object QuickSort extends SortUtils {
     this.shuffle(input)
     this.sortCutoff(input, 0, input.length-1, cutoff, ordering)
   }
+  def partition[T](input:Array[T], lo:Int, hi:Int)(implicit ordering:Ordering[T]) : Int = {
+    var i = lo; var j = hi; val pivot = input(lo)
+    // scan from left for values less than pivot and right to left for values greater than pivot
+    while(i < j) {
+      i = (i to hi).find((k) => ordering.gt(input(k), pivot)) match {
+            case Some(idx) => idx
+            case None => hi
+          }
+      j = (j until lo by -1).find((k) => ordering.lteq(input(k), pivot)) match {
+            case Some(idx) => idx
+            case None => lo
+          }
+      // place larger values to right of pivot and lower to left
+      if (i < j) {
+        this.exch(input, i, j)
+      }
+    }
+    this.exch(input, j, lo); j
+  }
   private def sort[T](input:Array[T], lo:Int, hi:Int, ordering:Ordering[T]) : Array[T] = {
     if (hi <= lo) input
     else {
@@ -205,7 +203,7 @@ object QuickSort extends SortUtils {
     }
   }
   private def sortCutoff[T](input:Array[T], lo:Int, hi:Int, cutoff:Int, ordering:Ordering[T]) : Array[T] = {
-    if (hi - cutoff <= lo) InsertionSort.sort(input)(ordering)
+    if (hi - cutoff <= lo) this.insertionSort(input, lo, hi)(ordering)
     else {
       var split = this.partition(input, lo, hi)(ordering)
       this.sortCutoff(input, lo, split-1, cutoff, ordering)
@@ -235,6 +233,14 @@ object QuickSort extends SortUtils {
       this.sort3Part(input, lo, lt-1, ordering)
       this.sort3Part(input, gt+1, hi, ordering)
     }
+  }
+  private def insertionSort[T](input:Array[T], lo:Int, hi:Int)(implicit ordering:Ordering[T]) : Array[T] = {
+    (lo to hi).foreach({(i) =>
+      for (j <- (i until lo by -1) if ordering.lt(input(j), input(j-1))) {
+        this.exch(input, j, j-1)
+      }
+    })
+    input
   }
 }
 
