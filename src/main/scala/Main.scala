@@ -123,7 +123,7 @@ object SortRunner {
     }
     val csvFile = new java.io.PrintWriter("report.csv")
     csvFile.println(s"ArratType: ${arrayType}")
-    csvFile.println(this.allSorts.mkString(","))
+    csvFile.println(s"NSteps,${this.allSorts.mkString(",")}")
     csvOutput.foreach(csvFile.println(_))
     csvFile.close()
   }
