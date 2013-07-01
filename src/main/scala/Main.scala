@@ -151,16 +151,37 @@ object SortRunner {
   def allFunctionalSorts = List("InsertionSortFunctional", "MergeSortFunctional", "QuickSortFunctional")
   // arrays
   def array(arrayType:String, n:Int) : Array[Int] = arrayType match {
-    case "Random" => this.randomArray(n)
+    case "Random"     => this.randomArray(n)
+    case "Sorted"     => (1 to n).toArray
+    case "Shuffled"   => this.shuffledArray(0.5, n)
+    case "SetValues"  => this.setValuesArray(Array(1,2,3), n)
     case _ => throw new IllegalArgumentException("ArrayType invalid")
   }
-  def allArrays = List("Random")
+  def allArrays = List("Random", "Sorted", "Shuffled", "SetValues")
   def randomArray(n:Int) = {
     Array.fill(n)(Random.nextInt(n))
+  }
+  def shuffledArray(shuffleFactor:Double, n:Int) = {
+    var array = (1 to n).toArray
+    array.indices.foreach((i) => {
+      if (Random.nextFloat() > shuffleFactor) {
+        val j = Random.nextInt(i+1)
+        val tmp = array(i); array(i) = array(j); array(j) = tmp
+      }
+    })
+    array
+  }
+  def setValuesArray(values:Array[Int], n:Int) : Array[Int] = {
+    var array = new Array[Int](n)
+    array.indices.foreach((i) => {
+      array(i) = values(Random.nextInt(values.length))
+    })
+    array
   }
   // lists
   def list(arrayType:String, n:Int) : List[Int] = arrayType match {
     case "Random" => this.randomList(n)
+    case "Sorted" => (1 to n).toList
     case _ => throw new IllegalArgumentException("ArrayType invalid")
   }
   def randomList(n:Int) = {
