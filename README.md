@@ -1,4 +1,4 @@
-# enstropy #
+# enstrophy #
 
 Implementation of problems described in "Algorithms" by Sedgewick and Wayne.
 
