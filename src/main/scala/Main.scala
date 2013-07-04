@@ -151,10 +151,11 @@ object SortRunner {
   def allFunctionalSorts = List("InsertionSortFunctional", "MergeSortFunctional", "QuickSortFunctional")
   // arrays
   def array(arrayType:String, n:Int) : Array[Int] = arrayType match {
-    case "Random"     => this.randomArray(n)
-    case "Sorted"     => (1 to n).toArray
-    case "Shuffled"   => this.shuffledArray(0.5, n)
-    case "SetValues"  => this.setValuesArray(Array(1,2,3), n)
+    case "Random"           => this.randomArray(n)
+    case "Sorted"           => (1 to n).toArray
+    case "ReversedSorted"   => (n to 1 by -1).toArray
+    case "Shuffled"         => this.shuffledArray(0.5, n)
+    case "SetValues"        => this.setValuesArray(Array(1,2,3), n)
     case _ => throw new IllegalArgumentException("ArrayType invalid")
   }
   def allArrays = List("Random", "Sorted", "Shuffled", "SetValues")
